@@ -13,7 +13,7 @@ export function Navbar() {
     ).matches;
     const isDark = stored ? stored === "dark" : prefersDark;
     setDark(isDark);
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function Navbar() {
     const next = !dark;
     setDark(next);
     localStorage.setItem("theme", next ? "dark" : "light");
-    document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", next);
   };
 
   const links = [
@@ -47,8 +47,8 @@ export function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2 group">
-          <span className="text-xl font-semibold tracking-tight">
-            ops<span className="text-accent">-</span>phoenix
+          <span className="text-xl font-bold tracking-tight">
+            SRE <span className="text-accent">Agent</span>
           </span>
         </a>
 

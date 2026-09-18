@@ -3,7 +3,6 @@
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-32 overflow-hidden">
-      {/* Background grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
         style={{
@@ -13,37 +12,33 @@ export function Hero() {
         }}
       />
 
-      {/* Gradient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 dark:bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-surface-border bg-surface text-xs font-medium text-muted mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-          Now in private beta — GCP integration in progress
+          Now in private beta
         </div>
 
-        {/* Headline */}
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-8">
-          Most SRE tools tell you{" "}
-          <span className="text-accent">what&apos;s broken.</span>
+        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-8">
+          <span className="font-bold">Most tools tell you</span>
           <br />
-          ops-phoenix{" "}
-          <span className="text-accent">fixes it.</span>
+          <span className="text-accent">what broke.</span>
+          <br />
+          <span className="font-bold">SRE Agent</span>
+          <span className="text-accent"> fixes it.</span>
         </h1>
 
-        {/* Subheadline */}
         <p className="text-lg sm:text-xl text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
           An AI agent that detects incidents, reads your logs, finds the root
           cause, writes the code fix, opens a PR, deploys it, and verifies it
           worked — all while your engineer is still reading the alert.
         </p>
 
-        {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#"
-            className="group relative inline-flex items-center gap-2 px-8 py-3.5 bg-accent text-background font-semibold rounded-full hover:bg-accent-soft transition-colors"
+            className="group relative inline-flex items-center gap-2 px-8 py-3.5 bg-accent text-white font-semibold rounded-full hover:bg-accent-soft transition-colors"
           >
             Get Started
             <svg
@@ -76,7 +71,6 @@ export function Hero() {
           </a>
         </div>
 
-        {/* Code preview */}
         <div className="mt-16 max-w-2xl mx-auto">
           <div className="rounded-xl border border-surface-border bg-surface overflow-hidden text-left shadow-2xl">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-surface-border">
@@ -84,21 +78,21 @@ export function Hero() {
               <span className="w-3 h-3 rounded-full bg-yellow-400/80" />
               <span className="w-3 h-3 rounded-full bg-green-400/80" />
               <span className="ml-3 text-xs text-muted font-mono">
-                ops-phoenix pipeline
+                sre-agent pipeline
               </span>
             </div>
             <pre className="p-5 text-sm font-mono leading-relaxed overflow-x-auto text-code-text">
               <code>
-                <span className="text-accent">$</span> ops-phoenix start{"\n"}
-                <span className="text-muted">{"›"} Scanning Cloud Logging for anomalies...</span>{"\n"}
-                <span className="text-muted">{"›"} Anomaly detected: 5xx rate spike on /api/resumes</span>{"\n"}
-                <span className="text-muted">{"›"} Tracing to recent deploy: auth-service v2.3.1</span>{"\n"}
-                <span className="text-muted">{"›"} Root cause: token refresh regression in PR #482</span>{"\n"}
+                <span className="text-accent">$</span> sre-agent start{`\n`}
+                <span className="text-muted">{"›"} Scanning Cloud Logging for anomalies...</span>{`\n`}
+                <span className="text-muted">{"›"} Anomaly detected: 5xx rate spike on /api/resumes</span>{`\n`}
+                <span className="text-muted">{"›"} Tracing to recent deploy: auth-service v2.3.1</span>{`\n`}
+                <span className="text-muted">{"›"} Root cause: token refresh regression in PR #482</span>{`\n`}
                 <span className="text-green-400">
                   {"›"} Opening PR with fix: revert token validation path
                 </span>
-                {"\n"}
-                <span className="text-muted">{"›"} CI passed. Deploying to production...</span>{"\n"}
+                {`\n`}
+                <span className="text-muted">{"›"} CI passed. Deploying to production...</span>{`\n`}
                 <span className="text-green-400">
                   {"›"} Verified: 5xx rate back to baseline. Incident resolved in 3m 12s.
                 </span>

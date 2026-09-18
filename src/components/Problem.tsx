@@ -52,7 +52,7 @@ export function Problem() {
           <p className="text-sm font-semibold uppercase tracking-widest text-accent mb-4 font-mono">
             The problem
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
+          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
             You have more signal<br />
             than sense.
           </h2>

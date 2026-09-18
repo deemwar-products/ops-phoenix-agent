@@ -1,27 +1,29 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #f5f5f0;
-  --foreground: #1a1a1a;
+  --background: #fafafa;
+  --foreground: #171717;
   --surface: #ffffff;
-  --surface-border: #e5e5e0;
-  --muted: #6b6b60;
-  --accent: #d97706;
-  --accent-soft: #fbbf24;
-  --code-bg: #2d2d2d;
-  --code-text: #e5e5e5;
+  --surface-border: #e5e5e5;
+  --muted: #737373;
+  --accent: #2563eb;
+  --accent-soft: #3b82f6;
+  --code-bg: #1e1e1e;
+  --code-text: #d4d4d4;
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #e5e5e5;
   --surface: #141414;
-  --surface-border: #2a2a2a;
-  --muted: #999990;
-  --accent: #fbbf24;
-  --accent-soft: #d97706;
+  --surface-border: #262626;
+  --muted: #a3a3a3;
+  --accent: #60a5fa;
+  --accent-soft: #3b82f6;
   --code-bg: #1a1a1a;
-  --code-text: #e5e5e5;
+  --code-text: #d4d4d4;
 }
 
 @theme inline {
@@ -34,24 +36,21 @@
   --color-accent-soft: var(--accent-soft);
   --color-code-bg: var(--code-bg);
   --color-code-text: var(--code-text);
-  --font-sans: var(--font-archivo);
-  --font-mono: var(--font-plex-mono);
-  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
 ::selection {
   background: var(--accent);
-  color: var(--background);
+  color: white;
 }

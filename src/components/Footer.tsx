@@ -5,11 +5,8 @@ export function Footer() {
     <footer className="py-12 px-6 border-t border-surface-border">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold tracking-tight">
-            ops<span className="text-accent">-</span>phoenix
-          </span>
-          <span className="text-xs text-muted font-mono">
-            by deemwar
+          <span className="text-lg font-bold tracking-tight">
+            SRE <span className="text-accent">Agent</span>
           </span>
         </div>
 
@@ -31,7 +28,7 @@ export function Footer() {
         </div>
 
         <p className="text-xs text-muted">
-          Open source. Built for engineers.
+          Built for engineering teams.
         </p>
       </div>
     </footer>

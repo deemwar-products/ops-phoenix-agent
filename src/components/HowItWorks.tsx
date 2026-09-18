@@ -48,7 +48,7 @@ export function HowItWorks() {
           <p className="text-sm font-semibold uppercase tracking-widest text-accent mb-4 font-mono">
             How it works
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
+          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
             Six steps. No humans required.
           </h2>
           <p className="text-muted text-lg max-w-2xl mx-auto">
@@ -68,7 +68,7 @@ export function HowItWorks() {
               <span className="font-mono text-xs text-accent/60 mb-4 block">
                 Step {step.step}
               </span>
-              <h3 className="text-2xl font-display mb-3">{step.title}</h3>
+              <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
               <p className="text-muted text-sm leading-relaxed">
                 {step.description}
               </p>
@@ -84,7 +84,7 @@ export function HowItWorks() {
         {/* Outcome callout */}
         <div className="mt-16 text-center p-8 rounded-2xl border border-accent/20 bg-accent/5 dark:bg-accent/10">
           <p className="font-mono text-sm text-accent mb-2">TOTAL TIME</p>
-          <p className="font-display text-4xl sm:text-5xl mb-2">&lt; 5 minutes</p>
+          <p className="font-bold text-4xl sm:text-5xl mb-2">&lt; 5 minutes</p>
           <p className="text-muted">
             From first anomaly signal to verified fix. Zero human intervention
             required (if you want it).

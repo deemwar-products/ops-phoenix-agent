@@ -48,7 +48,7 @@ export function Features() {
           <p className="text-sm font-semibold uppercase tracking-widest text-accent mb-4 font-mono">
             What you get
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
+          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
             Six capabilities.
             <br />
             <span className="text-accent">Zero alert fatigue.</span>

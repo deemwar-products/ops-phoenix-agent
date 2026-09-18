@@ -57,7 +57,7 @@ export function Integrations() {
           <p className="text-sm font-semibold uppercase tracking-widest text-accent mb-4 font-mono">
             Integrations
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
+          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
             One container.
             <br />
             <span className="text-accent">Your data never leaves your infra.</span>
