@@ -1,0 +1,21 @@
+[Unit]
+Description=Ops Phoenix — autonomous SRE cycle
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=opsphoenix
+Group=opsphoenix
+EnvironmentFile=/etc/ops-phoenix/ops-phoenix.env
+ExecStart=/opt/ops-phoenix/bin/ops-phoenix-runner.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+# Don't let one run eat the whole day
+TimeoutStartSec=900
+
+# If something hangs, systemd kills it; the next timer tick still runs
+KillMode=mixed
+KillSignal=SIGTERM

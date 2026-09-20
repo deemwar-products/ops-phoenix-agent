@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #fdfcf8;
+  --foreground: #1b1c19;
+  --surface: #ffffff;
+  --surface-border: #e8e3d9;
+  --muted: #6b665e;
+  --accent: #735c41;
+  --accent-soft: #8b6d4d;
+  --code-bg: #0f1117;
+  --code-text: #c9d1d9;
+}
+
+.dark {
+  --background: #1b1c19;
+  --foreground: #f5f2ec;
+  --surface: #25231f;
+  --surface-border: #3a3632;
+  --muted: #a3a09a;
+  --accent: #b89968;
+  --accent-soft: #735c41;
+  --code-bg: #0f1117;
+  --code-text: #c9d1d9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.015em;
+}
+
+code, pre, .font-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "calt", "ss02";
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ops-phoenix"
+version = "0.1.0"
+description = "Autonomous ops agent: detect, analyze, fix, and deploy"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = [
+ "anthropic>=0.39",
+]
+
+[project.scripts]
+ops-phoenix = "ops_phoenix.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ops_phoenix*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

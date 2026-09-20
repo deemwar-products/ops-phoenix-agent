@@ -1,0 +1,32 @@
+{
+ "observability": {
+ "type": "grafana_cloud",
+ "grafana_url": "https://observability.deemwar.com",
+ "grafana_token_path": "/etc/ops-phoenix/grafana-token",
+ "container_patterns": ["reqsume-app-web-*", "reqsume-api-*"],
+ "host_patterns": ["app1", "app2"],
+ "error_patterns": ["level=~\"(?i)error|fatal\""]
+ },
+ "github": {
+ "repo": "deemwar-products/reqsume",
+ "base_branch": "main",
+ "token_env_var": "GH_TOKEN",
+ "default_labels": ["sre-alert", "ops-phoenix"]
+ },
+ "cicd": {
+ "type": "github_actions",
+ "workflow_name": "Deploy to Production New"
+ },
+ "deployment": {
+ "auto_merge": false,
+ "monitor_timeout_seconds": 600,
+ "max_retries": 2
+ },
+ "anthropic": {
+ "base_url": "https://api3.claudestore.store",
+ "model": "claude-haiku-4-5",
+ "fallback_model": "claude-sonnet-4-6",
+ "request_timeout_seconds": 60,
+ "max_retries_on_5xx": 2
+ }
+}

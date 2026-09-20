@@ -1,0 +1,77 @@
+Ops Phoenix — Autonomous SRE Agent
+==================================
+
+What is this?
+-------------
+A self-healing agent that runs every hour, queries production Loki for
+error logs from reqsume-app-web-* and reqsume-api-* on app1/app2, asks
+Claude to summarize them, and either opens a GitHub issue, comments on
+an existing one, or stays silent based on thresholds (recurrence,
+severity, rate limit, error count).
+
+How it runs
+-----------
+- systemd timer `ops-phoenix-hourly.timer` fires at HH:07 every hour
+- `Persistent=true` so missed fires run on next boot
+- `RandomizedDelaySec=90` so multiple VMs don't fan out at the same instant
+- Service is `Type=oneshot` under user `opsphoenix` (uid 999, nologin)
+- `TimeoutStartSec=900` — anything hung past 15min gets SIGTERM'd
+- One run at a time via `flock` on /var/lock/ops-phoenix.lock
+
+Files
+-----
+- /opt/ops-phoenix/ — vendored skill code (git clone)
+- /opt/ops-phoenix/bin/ops-phoenix-runner.sh — the wrapper
+- /opt/ops-phoenix/.venv/ — python virtualenv
+- /etc/ops-phoenix/config.json — observability + github + cicd
+- /etc/ops-phoenix/ops-phoenix.env — non-secret defaults (systemd loads)
+- /etc/ops-phoenix/secret — ANTHROPIC_API_KEY + BASE_URL
+- /etc/ops-phoenix/gh-token — GitHub fine-grained PAT
+- /etc/ops-phoenix/grafana-token — Grafana API token
+- /var/lib/ops-phoenix/state/ — agent's $HOME (rate-limit + dedup state)
+- /var/log/ops-phoenix/runs/ — one log per run, 30d retention
+- /var/lib/ops-phoenix/heartbeat.prom — Prometheus textfile heartbeat
+
+How to triage a failure
+-----------------------
+1. Check the timer: systemctl list-timers ops-phoenix-hourly.timer
+2. Last 5 runs: ls -lt /var/log/ops-phoenix/runs/ | head -5
+3. Tail the latest log: tail -100 /var/log/ops-phoenix/runs/<newest>.log
+4. Service journal: journalctl -u ops-phoenix-hourly.service -n 50
+5. Heartbeat: cat /var/lib/ops-phoenix/heartbeat.prom
+
+How to disable (kill-switch)
+----------------------------
+Pick one. All take effect on the next timer fire.
+
+ # Option A: env var (persistent across reboots)
+ echo 'OPS_PHOENIX_DISABLED=1' | sudo tee -a /etc/ops-phoenix/ops-phoenix.env
+ sudo systemctl daemon-reload
+
+ # Option B: sentinel file (immediate, no daemon-reload needed)
+ sudo touch /etc/ops-phoenix/disabled
+
+ # Option C: nuclear
+ sudo systemctl disable --now ops-phoenix-hourly.timer
+
+To re-enable: undo whichever you did, then:
+ sudo systemctl enable --now ops-phoenix-hourly.timer
+
+How to manually trigger one run (without changing the schedule)
+---------------------------------------------------------------
+ sudo systemctl start ops-phoenix-hourly.service
+ journalctl -u ops-phoenix-hourly.service -f
+
+Who to page
+-----------
+#sre on Slack. Runbook: docs/specs/in-progress/055-ops-phoenix-autonomous-vm-runner.md
+Spec author: Muthukumaran (Mohan).
+
+How to rotate credentials
+-------------------------
+- Anthropic key: edit /etc/ops-phoenix/secret (preserve 0600 perms)
+- GitHub PAT: re-issue at https://github.com/settings/personal-access-tokens
+ then overwrite /etc/ops-phoenix/gh-token
+- Grafana token: re-issue in Grafana → API keys, then overwrite the file
+
+After any rotation, trigger one manual run to verify.

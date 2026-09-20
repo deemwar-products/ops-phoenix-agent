@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly Ops Phoenix skill update
+Requires=ops-phoenix-update.service
+
+[Timer]
+OnCalendar=Sun *-*-* 03:30:00
+RandomizedDelaySec=7200
+Persistent=true
+
+Unit=ops-phoenix-update.service
+
+[Install]
+WantedBy=timers.target

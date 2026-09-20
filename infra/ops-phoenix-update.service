@@ -1,0 +1,10 @@
+[Unit]
+Description=Ops Phoenix — weekly skill code update
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=opsphoenix
+Group=opsphoenix
+ExecStart=/opt/ops-phoenix/bin/update-skill.sh

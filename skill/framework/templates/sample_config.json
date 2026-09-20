@@ -1,0 +1,30 @@
+{
+  "observability": {
+    "type": "grafana_cloud",
+    "grafana_url": "https://your-company.grafana.net",
+    "grafana_token_path": "/path/to/grafana-api-token",
+    "loki_url": "",
+    "loki_user": "",
+    "loki_password": "",
+    "container_patterns": ["app-*", "api-*"],
+    "host_patterns": ["prod-*", "app1|app2"],
+    "error_patterns": [
+      "level=~\"(?i)error|fatal\""
+    ]
+  },
+  "github": {
+    "repo": "your-org/your-repo",
+    "token_env_var": "GITHUB_TOKEN",
+    "base_branch": "main",
+    "default_labels": ["sre-alert", "bug"]
+  },
+  "cicd": {
+    "type": "github_actions",
+    "workflow_name": "Deploy to Production"
+  },
+  "deployment": {
+    "auto_merge": true,
+    "monitor_timeout_seconds": 300,
+    "max_retries": 2
+  }
+}

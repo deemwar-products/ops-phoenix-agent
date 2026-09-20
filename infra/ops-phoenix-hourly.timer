@@ -1,0 +1,20 @@
+[Unit]
+Description=Hourly Ops Phoenix cycle
+Requires=ops-phoenix-hourly.service
+
+[Timer]
+# Every hour on the hour, offset by 7 minutes to avoid colliding with
+# other cron jobs on the VM (kamal access logs, vsync pulls, etc.)
+OnCalendar=*:07:00
+
+# If the VM was off at the scheduled time, run on boot
+Persistent=true
+
+# Randomize the start by ±90s so multiple dev VMs don't fan out
+# (single-VM today, but jitter is cheap insurance)
+RandomizedDelaySec=90
+
+Unit=ops-phoenix-hourly.service
+
+[Install]
+WantedBy=timers.target

@@ -2,109 +2,160 @@
 
 const plans = [
   {
-    name: "Starter",
-    price: "$499/mo",
-    priceNote: "per month, billed annually",
-    description: "For teams getting started with autonomous incident response.",
+    name: "Individual",
+    description:
+      "One engineer, one service. Guided mode with manual approval on every step.",
     features: [
-      "Up to 3 services",
+      "1 service / repo",
       "Anomaly detection + RCA",
-      "GitHub PR integration",
-      "Guided mode (approval required)",
+      "PR-based fixes (manual approval)",
+      "Local run history",
       "Email support",
     ],
-    cta: "Get Started",
-    ctaHref: "#",
-    highlighted: false,
+    cta: "Talk to us",
+  },
+  {
+    name: "Team",
+    description:
+      "Shared on-call rotation. Guided or autonomous fixes with shared run history.",
+    features: [
+      "Up to 10 services / repos",
+      "Anomaly detection + RCA",
+      "Guided or autonomous mode",
+      "Slack integration",
+      "Shared run history + audit log",
+    ],
+    cta: "Talk to us",
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    priceNote: "tailored to your infra",
-    description: "For teams running at scale. Full autonomy, full support.",
+    description:
+      "Full autonomy, multi-cloud, SSO, and dedicated support with SLA.",
     features: [
-      "Unlimited services",
+      "Unlimited services / repos",
       "Autonomous mode (no approvals)",
-      "Multi-repo / multi-service",
-      "Advanced RCA with traces",
+      "Multi-cloud + on-prem",
+      "SSO, RBAC, audit logs",
       "Custom integrations",
       "Dedicated support + SLA",
     ],
-    cta: "Contact Sales",
-    ctaHref: "#",
-    highlighted: true,
+    cta: "Talk to us",
   },
+];
+
+function checkFeature(planName: string, feature: string): boolean {
+  const map: Record<string, string[]> = {
+    "1 service / repo": ["Individual"],
+    "Up to 10 services / repos": ["Team", "Enterprise"],
+    "Unlimited services / repos": ["Enterprise"],
+    "Anomaly detection + RCA": ["Individual", "Team", "Enterprise"],
+    "PR-based fixes (manual approval)": ["Individual"],
+    "Guided or autonomous mode": ["Team", "Enterprise"],
+    "Autonomous mode (no approvals)": ["Enterprise"],
+    "Slack integration": ["Team", "Enterprise"],
+    "Shared run history + audit log": ["Team", "Enterprise"],
+    "Email support": ["Individual", "Team"],
+    "Multi-cloud + on-prem": ["Enterprise"],
+    "SSO, RBAC, audit logs": ["Enterprise"],
+    "Custom integrations": ["Enterprise"],
+    "Dedicated support + SLA": ["Enterprise"],
+  };
+  return (map[feature] || []).includes(planName);
+}
+
+const allFeatures = [
+  "1 service / repo",
+  "Up to 10 services / repos",
+  "Unlimited services / repos",
+  "Anomaly detection + RCA",
+  "PR-based fixes (manual approval)",
+  "Guided or autonomous mode",
+  "Autonomous mode (no approvals)",
+  "Slack integration",
+  "Shared run history + audit log",
+  "Email support",
+  "Multi-cloud + on-prem",
+  "SSO, RBAC, audit logs",
+  "Custom integrations",
+  "Dedicated support + SLA",
 ];
 
 export function Pricing() {
   return (
-    <section id="pricing" className="py-32 px-6 border-t border-surface-border">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-20">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent mb-4 font-mono">
+    <section id="pricing" className="py-32 px-6" style={{ backgroundColor: "#fdfcf8" }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-10 max-w-3xl">
+          <p
+            className="text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono"
+            style={{ color: "#735c41" }}
+          >
             Pricing
           </p>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
-            Start small.
-            <br />
-            <span className="text-accent">Scale when you need to.</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
+            Plans for every team size.
           </h2>
+          <p className="text-base" style={{ color: "#6b665e" }}>
+            Pricing will be announced soon. Reach out to get on the early access list.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative p-8 rounded-2xl border ${
-                plan.highlighted
-                  ? "border-accent/40 bg-accent/5 dark:bg-accent/10"
-                  : "border-surface-border bg-surface"
-              }`}
-            >
-              {plan.highlighted && (
-                <span className="absolute -top-3 left-8 text-xs font-mono uppercase tracking-widest text-accent bg-background px-3 py-1 border border-surface-border rounded-full">
-                  Recommended
-                </span>
-              )}
-              <h3 className="text-2xl font-bold mb-1">{plan.name}</h3>
-              <p className="text-4xl font-bold mb-1">{plan.price}</p>
-              <p className="text-muted text-xs mb-2">{plan.priceNote}</p>
-              <p className="text-muted text-sm mb-6">{plan.description}</p>
-
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2 text-sm text-muted"
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm" style={{ color: "#1b1c19" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid #e0d9cd" }}>
+                <th className="text-left py-4 pr-8 font-medium text-xs uppercase tracking-[0.15em]" style={{ color: "#735c41", verticalAlign: "middle" }}>
+                  What&apos;s included
+                </th>
+                {plans.map((plan) => (
+                  <th
+                    key={plan.name}
+                    className="text-left py-4 px-6 font-medium text-xs uppercase tracking-[0.15em]"
+                    style={{ color: "#735c41", verticalAlign: "middle" }}
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      className="text-accent shrink-0 mt-0.5"
-                    >
-                      <path d="M5 13l4 4L19 7" />
-                    </svg>
-                    {feature}
-                  </li>
+                    {plan.name}
+                  </th>
                 ))}
-              </ul>
-
-              <a
-                href={plan.ctaHref}
-                className={`block text-center py-3 rounded-full font-semibold text-sm transition-colors ${
-                  plan.highlighted
-                    ? "bg-accent text-white hover:bg-accent-soft"
-                    : "border border-surface-border hover:border-foreground/30"
-                }`}
-              >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
+              </tr>
+            </thead>
+            <tbody>
+              {allFeatures.map((feature) => (
+                <tr key={feature} style={{ borderBottom: "1px solid #f0ede6" }}>
+                  <td className="py-3.5 pr-8" style={{ color: "#6b665e", verticalAlign: "middle" }}>
+                    {feature}
+                  </td>
+                  {plans.map((plan) => (
+                    <td key={plan.name} className="py-3.5 px-6 text-center" style={{ verticalAlign: "middle" }}>
+                      {checkFeature(plan.name, feature) ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="inline-block" style={{ color: "#735c41" }}>
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <span style={{ color: "#d5cfc4" }}>—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              <tr>
+                <td className="py-5 pr-8" style={{ verticalAlign: "middle" }} />
+                {plans.map((plan) => (
+                  <td key={plan.name} className="py-5 px-6" style={{ verticalAlign: "middle" }}>
+                    <a
+                      href="https://deemwar.com/contact"
+                      className="inline-block px-6 py-2.5 rounded-full text-sm font-semibold transition-colors"
+                      style={{
+                        backgroundColor: plan.name === "Team" ? "#735c41" : "transparent",
+                        color: plan.name === "Team" ? "#fff" : "#735c41",
+                        border: plan.name === "Team" ? "none" : "1px solid #d5cfc4",
+                      }}
+                    >
+                      {plan.cta}
+                    </a>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
