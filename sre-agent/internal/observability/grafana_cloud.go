@@ -54,8 +54,8 @@ func (a *GrafanaCloudAdapter) QueryErrors(ctx context.Context, timeWindow string
 				"datasource": map[string]string{"type": "loki", "uid": a.OrgID},
 			},
 		},
-		"from": start,
-		"to":   end,
+		"from": fmt.Sprintf("%d", start),
+		"to":   fmt.Sprintf("%d", end),
 	}
 
 	bodyBytes, err := json.Marshal(body)

@@ -124,6 +124,13 @@ func TestBuildLogQL(t *testing.T) {
 			want: `{container=~"myapp-.*",level=~"(?i)error|fatal"}`,
 		},
 		{
+			name: "label error pattern without selectors",
+			config: FilterConfig{
+				ErrorPattern: `level=~"(?i)error|fatal"`,
+			},
+			want: `{level=~"(?i)error|fatal"}`,
+		},
+		{
 			name: "bare error pattern becomes line filter",
 			config: FilterConfig{
 				ErrorPattern: "error|panic",

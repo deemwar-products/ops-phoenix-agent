@@ -39,9 +39,13 @@ func BuildLogQL(fc FilterConfig) string {
 		// If it contains a label selector like "level=~...", append to label
 		// If it's a bare word, use as a regex line filter
 		if strings.Contains(fc.ErrorPattern, "=") {
-			// strip braces, append to existing
+			// strip braces, append to existing selector(s) — or start fresh
 			inner := strings.Trim(fc.ErrorPattern, "{}")
-			label = label[:len(label)-1] + "," + inner + "}"
+			if label == "{}" {
+				label = "{" + inner + "}"
+			} else {
+				label = label[:len(label)-1] + "," + inner + "}"
+			}
 		} else {
 			label += fmt.Sprintf(` |= "(?i)(%s)"`, fc.ErrorPattern)
 		}
