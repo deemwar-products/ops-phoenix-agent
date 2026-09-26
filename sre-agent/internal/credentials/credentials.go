@@ -105,11 +105,23 @@ func GetObservabilityToken(provider string) (Credential, error) {
 	return Credential{Source: SourceNone}, fmt.Errorf("no %s token — set GRAFANA_API_TOKEN or `sre-agent auth set grafana_token <token>`", provider)
 }
 
+// GetTeamsWebhookURL resolves the Teams (Power Automate) webhook URL: env → keychain.
+func GetTeamsWebhookURL() (Credential, error) {
+	if v := os.Getenv("TEAMS_WEBHOOK_URL"); v != "" {
+		return Credential{Name: "teams_webhook_url", Value: v, Source: SourceEnv}, nil
+	}
+	s := DefaultStore()
+	if v, err := s.Get("teams_webhook_url"); err == nil && v != "" {
+		return Credential{Name: "teams_webhook_url", Value: v, Source: SourceKeychain}, nil
+	}
+	return Credential{Name: "teams_webhook_url"}, fmt.Errorf("no Teams webhook — set TEAMS_WEBHOOK_URL or `sre-agent auth set teams_webhook_url <url>`")
+}
+
 // --- Status (non-secret) ---
 
 // Status returns credential availability without revealing values.
 func Status() map[string]Credential {
-	c := map[string]Credential{"github": {}, "anthropic": {}, "grafana": {}}
+	c := map[string]Credential{"github": {}, "anthropic": {}, "grafana": {}, "teams": {}}
 	if tok, err := GetGitHubToken(); err == nil {
 		c["github"] = tok
 	}
@@ -118,6 +130,9 @@ func Status() map[string]Credential {
 	}
 	if tok, err := GetObservabilityToken("grafana"); err == nil {
 		c["grafana"] = tok
+	}
+	if tok, err := GetTeamsWebhookURL(); err == nil {
+		c["teams"] = tok
 	}
 	return c
 }

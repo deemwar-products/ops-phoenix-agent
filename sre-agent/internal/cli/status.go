@@ -45,7 +45,7 @@ func StatusCmd(cfg *config.Config, stdout, stderr io.Writer) *cobra.Command {
 			// Show credential status (masked, no values)
 			fmt.Fprintf(stdout, "\nCredentials:\n")
 			creds := credentials.Status()
-			for _, name := range []string{"github", "anthropic", "grafana"} {
+			for _, name := range []string{"github", "anthropic", "grafana", "teams"} {
 				if c, ok := creds[name]; ok && c.Value != "" {
 					fmt.Fprintf(stdout, "  %-12s ✓ %s\n", name, c.Source)
 				} else {

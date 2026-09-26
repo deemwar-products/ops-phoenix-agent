@@ -7,6 +7,7 @@ import (
 
 	"github.com/deemwar-products/sre-agent/internal/config"
 	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/sre-agent/internal/notify"
 	"github.com/deemwar-products/sre-agent/internal/observability"
 	"github.com/spf13/cobra"
 )
@@ -15,6 +16,7 @@ import (
 func DetectCmd(cfg *config.Config, stdout, stderr io.Writer) *cobra.Command {
 	var timeWindow string
 	var outputFormat string
+	var notifyTarget string
 
 	cmd := &cobra.Command{
 		Use:   "detect [time-window]",
@@ -43,6 +45,10 @@ func DetectCmd(cfg *config.Config, stdout, stderr io.Writer) *cobra.Command {
 			adapter, err := observability.NewAdapter(cfg)
 			if err != nil {
 				recordRun("detect", "", "failed", err.Error(), start)
+				maybeNotify(cmd.Context(), cfg, notifyTarget, notify.Result{
+					Command: "detect", Status: notify.StatusFailed, TimeWindow: timeWindow,
+					Duration: time.Since(start), Err: err.Error(),
+				}, stderr)
 				return fmt.Errorf("create observability adapter: %w", err)
 			}
 
@@ -50,6 +56,10 @@ func DetectCmd(cfg *config.Config, stdout, stderr io.Writer) *cobra.Command {
 			if err != nil {
 				recordRun("detect", "", "failed", err.Error(), start)
 				fmt.Fprintf(stderr, "detect: backend error: %v\n", err)
+				maybeNotify(cmd.Context(), cfg, notifyTarget, notify.Result{
+					Command: "detect", Status: notify.StatusFailed, TimeWindow: timeWindow,
+					Duration: time.Since(start), Err: err.Error(),
+				}, stderr)
 				return nil
 			}
 
@@ -61,10 +71,20 @@ func DetectCmd(cfg *config.Config, stdout, stderr io.Writer) *cobra.Command {
 				status = "partial"
 			}
 			recordRun("detect", summary, status, "", start)
+
+			notifyStatus := notify.StatusSuccess
+			if len(groups) > 0 {
+				notifyStatus = notify.StatusErrors
+			}
+			maybeNotify(cmd.Context(), cfg, notifyTarget, notify.Result{
+				Command: "detect", Status: notifyStatus, TimeWindow: timeWindow,
+				Duration: time.Since(start), Groups: groups,
+			}, stderr)
 			return nil
 		},
 	}
 	cmd.Flags().StringVar(&timeWindow, "time-window", "", "Time window (e.g. 30m, 2h, 1d) — overrides config default")
 	cmd.Flags().StringVar(&outputFormat, "format", "text", "Output format: text, json, markdown")
+	cmd.Flags().StringVar(&notifyTarget, "notify", "", "Post run result to a chat backend (teams) — empty = config default, 'off' = never")
 	return cmd
 }

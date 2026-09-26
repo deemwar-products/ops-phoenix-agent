@@ -34,6 +34,7 @@ type Config struct {
 	AI            AIConfig            `yaml:"ai"`
 	CICD          CICDConfig          `yaml:"cicd"`
 	Agent         AgentConfig         `yaml:"agent"`
+	Notify        NotifyConfig        `yaml:"notify"`
 }
 
 type ObservabilityConfig struct {
@@ -74,6 +75,20 @@ type AgentConfig struct {
 	Mode       string `yaml:"mode,omitempty"`
 	DryRun     bool   `yaml:"dry_run,omitempty"`
 	TimeWindow string `yaml:"time_window,omitempty"`
+}
+
+type NotifyConfig struct {
+	Teams TeamsNotifyConfig `yaml:"teams"`
+}
+
+// TeamsNotifyConfig toggles Teams channel notifications. The webhook URL is a
+// secret — resolved at runtime from credentials, never persisted here.
+type TeamsNotifyConfig struct {
+	Enabled        bool   `yaml:"enabled,omitempty"`
+	OnSuccess      bool   `yaml:"on_success,omitempty"`
+	MaxErrorsShown int    `yaml:"max_errors_shown,omitempty"`
+	LogsURL        string `yaml:"logs_url,omitempty"`
+	Environment    string `yaml:"environment,omitempty"`
 }
 
 // Save writes the config to disk. Token fields are stripped before serialization.
