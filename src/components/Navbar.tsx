@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ContactModal } from "./ContactModal";
 
 export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -20,6 +21,13 @@ export function Navbar() {
   }, [menuOpen]);
 
   const navLinkClass = "block py-2 text-sm font-medium transition-opacity hover:opacity-70";
+
+  const links = [
+    { href: "#how-it-works", label: "How it works" },
+    { href: "#two-surfaces", label: "Two surfaces" },
+    { href: "#install", label: "Install" },
+    { href: "#pricing", label: "Pricing" },
+  ];
 
   return (
     <nav
