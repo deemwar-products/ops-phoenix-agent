@@ -1,5 +1,7 @@
 "use client";
 
+import { ContactModal } from "./ContactModal";
+
 const plans = [
   {
     name: "Open",
@@ -119,17 +121,30 @@ export function Pricing() {
               </div>
 
               <div className="px-6 pb-6">
-                <a
-                  href={plan.href}
-                  className="block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
-                  style={{
-                    backgroundColor: plan.highlight ? "#735c41" : "transparent",
-                    color: plan.highlight ? "#fff" : "#735c41",
-                    border: plan.highlight ? "none" : "1px solid #d5cfc4",
-                  }}
-                >
-                  {plan.cta}
-                </a>
+                {plan.name !== "Open" ? (
+                  <ContactModal
+                    trigger={
+                      <span className="block w-full text-center py-3 rounded-full text-sm font-semibold cursor-pointer" style={{
+                        backgroundColor: plan.highlight ? "#735c41" : "transparent",
+                        color: plan.highlight ? "#fff" : "#735c41",
+                        border: plan.highlight ? "none" : "1px solid #d5cfc4",
+                      }}>
+                        {plan.cta}
+                      </span>
+                    }
+                  />
+                ) : (
+                  <a
+                    href={plan.href}
+                    className="block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
+                    style={{
+                      backgroundColor: "#735c41",
+                      color: "#fff",
+                    }}
+                  >
+                    {plan.cta}
+                  </a>
+                )}
               </div>
             </div>
           ))}

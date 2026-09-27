@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ContactModal } from "./ContactModal";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -53,13 +54,13 @@ export function Navbar() {
           </a>
         </div>
 
-        <a
-          href="mailto:admin@deemwar.com"
-          className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors"
-          style={{ backgroundColor: "#735c41", color: "#fff" }}
-        >
-          Contact
-        </a>
+        <ContactModal
+          trigger={
+            <span className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors" style={{ backgroundColor: "#735c41", color: "#fff" }}>
+              Contact
+            </span>
+          }
+        />
       </div>
     </nav>
   );
