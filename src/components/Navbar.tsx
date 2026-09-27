@@ -45,13 +45,6 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
-          <a
-            href="mailto:admin@deemwar.com"
-            className="font-mono text-xs tracking-wider hover:opacity-70 transition-opacity"
-            style={{ color: "#735c41" }}
-          >
-            admin@deemwar.com
-          </a>
         </div>
 
         <ContactModal
