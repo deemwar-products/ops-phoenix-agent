@@ -12,10 +12,9 @@ export function Navbar() {
   }, []);
 
   const links = [
-    { href: "#what-it-does", label: "What it does" },
-    { href: "#install", label: "Install" },
-    { href: "#problem", label: "Problem" },
     { href: "#how-it-works", label: "How it works" },
+    { href: "#two-surfaces", label: "Two surfaces" },
+    { href: "#install", label: "Install" },
     { href: "#pricing", label: "Pricing" },
   ];
 
@@ -48,11 +47,11 @@ export function Navbar() {
         </div>
 
         <a
-          href="https://deemwar.com/contact"
+          href="mailto:admin@deemwar.com?subject=SRE%20Agent%20inquiry"
           className="px-5 py-2 text-sm font-semibold rounded-full transition-colors"
           style={{ backgroundColor: "#735c41", color: "#fff" }}
         >
-          Talk to us
+          Contact
         </a>
       </div>
     </nav>

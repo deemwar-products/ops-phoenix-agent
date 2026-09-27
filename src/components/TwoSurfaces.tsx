@@ -37,7 +37,7 @@ function ColoredTerminalPanel({ label, children }: { label: string; children: Re
           </span>
         </div>
         <button
-          onClick={() => copy("sre-agent detect --source grafana --duration 5m\nsre-agent analyze --finding 0 --deep\nsre-agent fix --finding 0 --approve")}
+          onClick={() => copy("sre-agent detect --duration 5m\nsre-agent analyze --finding 0\nsre-agent fix --finding 0 --approve")}
           className="text-[10px] font-mono uppercase tracking-[0.1em] px-2.5 py-1 rounded-md transition-colors"
           style={{
             color: copied ? "#3fb950" : "rgba(255,255,255,0.25)",
@@ -56,46 +56,52 @@ function ColoredTerminalPanel({ label, children }: { label: string; children: Re
 
 export function TwoSurfaces() {
   return (
-    <section id="two-surfaces" className="py-32 px-6" style={{ backgroundColor: "#fdfcf8" }}>
+    <section id="two-surfaces" className="py-32 px-6" style={{ backgroundColor: "#0f1117" }}>
       <div className="max-w-6xl mx-auto">
         <div className="mb-12">
           <p
             className="text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono"
             style={{ color: "#735c41" }}
           >
-            See it in action
+            Two interfaces. One engine.
           </p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            Same engine. Two surfaces.
+          <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#f0ede6" }}>
+            Run it yourself. Or let an AI run it for you.
           </h2>
-          <p className="text-base sm:text-lg leading-relaxed max-w-2xl" style={{ color: "#6b665e" }}>
-            Run SRE Agent from your terminal or let any AI agent drive it. The
-            output — and the incident resolution — is identical.
+          <p className="text-base sm:text-lg leading-relaxed max-w-2xl" style={{ color: "#8b867f" }}>
+            The same sre-agent binary powers both interfaces. Same commands, same output,
+            same fix quality.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Terminal */}
+          {/* CLI */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono" style={{ color: "#735c41" }}>
-              From the terminal
+              CLI — human-driven
+            </p>
+            <p className="text-sm mb-4" style={{ color: "#8b867f" }}>
+              Run from your terminal. Full control over every flag and step. Pipe it into
+              your scripts, cron, or CI pipeline.
             </p>
             <ColoredTerminalPanel label="terminal">
-              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --source grafana --duration 5m{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Scanning Cloud Logging for anomalies...</span>{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} 2 anomalies found. P1: 5xx spike on /api/resumes</span>{`\n\n`}
-              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0 --deep{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Root cause: token refresh regression in auth-service v2.3.1</span>{`\n\n`}
+              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --duration 5m{`\n`}
+              <span style={{ color: "#8b949e" }}>{'›'} Found 2 errors. P1: 5xx spike /api/resumes{'\n\n'}</span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{`\n`}
+              <span style={{ color: "#8b949e" }}>{'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}</span>
               <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --approve{`\n`}
-              <span style={{ color: "#3fb950" }}>{'›'} PR opened: #482 revert token validation path</span>{`\n`}
-              <span style={{ color: "#3fb950" }}>{'›'} CI passed. Awaiting human approval to deploy.</span>
+              <span style={{ color: "#3fb950" }}>{'›'} PR #482 opened. CI passed. Awaiting your approval.{'\n'}</span>
             </ColoredTerminalPanel>
           </div>
 
           {/* Agent skill */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono" style={{ color: "#735c41" }}>
-              From Claude or Codex (agent skill)
+              Agent skill — AI-driven
+            </p>
+            <p className="text-sm mb-4" style={{ color: "#8b867f" }}>
+              Claude Code, Codex, Cursor, or any agent that reads SKILL.md can drive
+              sre-agent. Give it a goal, it picks the right commands.
             </p>
             <div
               className="rounded-xl overflow-hidden"
@@ -110,14 +116,17 @@ export function TwoSurfaces() {
                 </span>
               </div>
               <pre className="p-5 text-sm font-mono leading-7 overflow-x-auto" style={{ color: "#c9d1d9" }}>
-                <span style={{ color: "#ff7b72" }}>You:</span>{" "}Run a full detection pass on prod, analyze
-                the top finding, and if confidence is above 80% open a PR.{`\n\n`}
+                <span style={{ color: "#ff7b72" }}>You:</span>{" "}Check production for errors and fix anything critical.{`\n\n`}
                 <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
-                <span style={{ color: "#58a6ff" }}>detect --source grafana --duration 5m</span>{`\n\n`}
-                <span style={{ color: "#c9d1d9" }}>→ 2 anomalies found. P1: 5xx spike on /api/resumes (confidence 0.91)</span>{`\n\n`}
+                <span style={{ color: "#58a6ff" }}>detect --duration 1h</span>{`\n\n`}
+                <span style={{ color: "#c9d1d9" }}>→ Found 3 errors. P1: 5xx spike /api/resumes.{'\n\n'}</span>
                 <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
-                <span style={{ color: "#58a6ff" }}>analyze --finding 0 --deep</span>{`\n\n`}
-                <span style={{ color: "#c9d1d9" }}>→ Root cause: token refresh regression in auth-service v2.3.1. Opening PR…</span>
+                <span style={{ color: "#58a6ff" }}>analyze --finding 0</span>{`\n\n`}
+                <span style={{ color: "#c9d1d9" }}>→ Root cause: token refresh regression. Fix confidence: 0.91.{'\n\n'}</span>
+                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
+                <span style={{ color: "#58a6ff" }}>fix --finding 0 --approve</span>{`\n\n`}
+                <span style={{ color: "#3fb950" }}>→ PR #482 opened. CI passed. Deploy approved.{'\n'}</span>
+                <span style={{ color: "#3fb950" }}>→ Incident resolved in 3m 12s.{'\n'}</span>
               </pre>
             </div>
           </div>

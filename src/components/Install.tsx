@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { TerminalPanel } from "./TerminalPanel";
 
 function CopyButton({ text, dark }: { text: string; dark?: boolean }) {
   const [copied, setCopied] = useState(false);
@@ -54,28 +53,133 @@ export function Install() {
             Install
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-3" style={{ color: "#1b1c19" }}>
-            Checksum verified. macOS, Linux and Windows.
+            brew, go, pip, npm, winget. Take your pick.
           </h2>
+          <p className="text-base" style={{ color: "#6b665e" }}>
+            One binary. No runtime. Runs on macOS, Linux, Windows — inside a container,
+            on a VM, or on your laptop.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-          <TerminalPanel label="Homebrew" platform="macOS / Linux">
-{`brew install deemwar-products/tap/sre-agent`}
-          </TerminalPanel>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          <div>
+            <div
+              className="rounded-xl overflow-hidden mb-4"
+              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
+                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    macOS / Linux
+                  </span>
+                </div>
+                <CopyButton text="brew install deemwar-products/tap/sre-agent" dark />
+              </div>
+              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
+                brew install deemwar-products/tap/sre-agent
+              </pre>
+            </div>
 
-          <TerminalPanel label="Go install" platform="any platform with Go">
-{`go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest`}
-          </TerminalPanel>
+            <div
+              className="rounded-xl overflow-hidden mb-4"
+              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
+                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    any platform with Go
+                  </span>
+                </div>
+                <CopyButton text="go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest" dark />
+              </div>
+              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
+                go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest
+              </pre>
+            </div>
 
-          <TerminalPanel label="Windows" platform="PowerShell + winget">
-{`winget install DeemwarProducts.SREAgent`}
-          </TerminalPanel>
-        </div>
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
+                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    PowerShell / winget
+                  </span>
+                </div>
+                <CopyButton text="winget install DeemwarProducts.SREAgent" dark />
+              </div>
+              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
+                winget install DeemwarProducts.SREAgent
+              </pre>
+            </div>
+          </div>
 
-        <div className="mt-6">
-          <TerminalPanel label="Windows (Go toolchain)" platform="cmd / PowerShell">
-{`go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest`}
-          </TerminalPanel>
+          <div>
+            <div
+              className="rounded-xl overflow-hidden mb-4"
+              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
+                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    npm / npx
+                  </span>
+                </div>
+                <CopyButton text="npm install -g sre-agent" dark />
+              </div>
+              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
+                npm install -g sre-agent
+              </pre>
+            </div>
+
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <div
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
+                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    pip / PyPI
+                  </span>
+                </div>
+                <CopyButton text="pip install sre-agent" dark />
+              </div>
+              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
+                pip install sre-agent
+              </pre>
+            </div>
+          </div>
         </div>
 
         <div className="mt-12">
@@ -83,7 +187,7 @@ export function Install() {
             className="text-xs font-semibold uppercase tracking-[0.2em] mb-6 font-mono"
             style={{ color: "#735c41" }}
           >
-            First-run setup
+            First run
           </p>
 
           <div
@@ -95,7 +199,7 @@ export function Install() {
               style={{ borderBottom: "1px solid #e0d9cd", backgroundColor: "#f7f4ed" }}
             >
               <p className="text-xs font-mono uppercase tracking-[0.15em]" style={{ color: "#735c41" }}>
-                Run sre-agent init — here is what it will ask for
+                Configure in under a minute
               </p>
             </div>
 
@@ -103,41 +207,28 @@ export function Install() {
               {[
                 {
                   label: "Grafana URL",
-                  hint: "The base URL of your Grafana instance.",
-                  example: "https://grafana.your-company.com",
-                  note: "Must be reachable from the machine running SRE Agent. Grafana Cloud URLs work too (e.g., https://your-project.grafana.net).",
+                  example: "https://observability.yourco.com",
+                  note: "Grafana Cloud works too (https://your-project.grafana.net).",
                 },
                 {
-                  label: "Grafana API key",
-                  hint: "A Grafana service account token with at least Viewer + Alerting read permissions.",
+                  label: "Grafana token",
                   example: "glsa_xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                  note: 'Create one at Grafana → Administration → Service Accounts → New API Key. Scope: "Viewer" for read-only, "Editor" if you want SRE Agent to annotate dashboards.',
+                  note: 'Service account token with Viewer permissions. Create at Grafana → Administration → Service Accounts.',
                 },
                 {
-                  label: "Primary data source",
-                  hint: "Where SRE Agent pulls metrics and logs from.",
-                  example: "grafana  (or: loki / prometheus / cloud-logging)",
-                  note: "Grafana is the default — it acts as a unified query layer for Loki, Prometheus, and Cloud Monitoring behind it. Choose a direct source only if you are not running Grafana.",
+                  label: "GitHub repo",
+                  example: "yourco/your-product",
+                  note: "The repo where the agent opens PRs. gh CLI must be authenticated.",
                 },
                 {
-                  label: "Mode",
-                  hint: "How aggressive the fix pipeline is.",
-                  example: "guided  (or: autonomous)",
-                  note: 'Guided — opens a PR and waits for your approval before deploying. Autonomous — deploys automatically after CI passes (not recommended for production without a rollback policy).',
-                },
-                {
-                  label: "Notification channel (optional)",
-                  hint: "Where to send incident summaries after resolution.",
-                  example: "slack://#sre-alerts  (or: email / none)",
-                  note: "Requires the corresponding integration to be set up. Leave blank to skip notifications.",
+                  label: "AI API key",
+                  example: "ANTHROPIC_API_KEY=sk-ant-...",
+                  note: "Claude API key. Set as environment variable or enter during setup.",
                 },
               ].map((item) => (
                 <div key={item.label}>
                   <p className="text-sm font-semibold mb-1" style={{ color: "#1b1c19" }}>
                     {item.label}
-                  </p>
-                  <p className="text-xs mb-2" style={{ color: "#6b665e" }}>
-                    {item.hint}
                   </p>
                   <div className="flex items-center justify-between">
                     <pre
@@ -158,14 +249,8 @@ export function Install() {
         </div>
 
         <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
-          Requires Go 1.22+ (or the pre-built binary via Homebrew / winget). Run{" "}
-          <code
-            className="font-mono text-xs px-1.5 py-0.5 rounded"
-            style={{ backgroundColor: "#f0ede6", color: "#735c41" }}
-          >
-            sre-agent init
-          </code>{" "}
-          to get started.
+          Requires Go 1.22+ for the binary install. The npm and pip packages bundle
+          the runtime. No Python, no Java, no .NET required on the target machine.
         </p>
       </div>
     </section>

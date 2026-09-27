@@ -2,82 +2,84 @@
 
 const plans = [
   {
-    name: "Individual",
-    description:
-      "One engineer, one service. Guided mode with manual approval on every step.",
-    features: [
-      "1 service / repo",
-      "Anomaly detection + RCA",
-      "PR-based fixes (manual approval)",
-      "Local run history",
-      "Email support",
-    ],
-    cta: "Talk to us",
+    name: "Open",
+    price: "$0",
+    period: "forever",
+    description: "For solo engineers and side projects.",
+    features: {
+      services: "1",
+      detect: true,
+      analyze: true,
+      fix: true,
+      autonomous: false,
+      skills: false,
+      observability: true,
+      github: true,
+      history: true,
+      selfHosted: true,
+      support: "Community",
+    },
+    cta: "Install free",
+    href: "#install",
+    highlight: false,
   },
   {
     name: "Team",
-    description:
-      "Shared on-call rotation. Guided or autonomous fixes with shared run history.",
-    features: [
-      "Up to 10 services / repos",
-      "Anomaly detection + RCA",
-      "Guided or autonomous mode",
-      "Slack integration",
-      "Shared run history + audit log",
-    ],
-    cta: "Talk to us",
+    price: "$49",
+    period: "/service/month",
+    description: "For teams running production services.",
+    features: {
+      services: "Up to 5",
+      detect: true,
+      analyze: true,
+      fix: true,
+      autonomous: true,
+      skills: true,
+      observability: true,
+      github: true,
+      history: true,
+      selfHosted: true,
+      support: "Email · 48h SLA",
+    },
+    cta: "Start trial",
+    href: "mailto:admin@deemwar.com",
+    highlight: true,
   },
   {
     name: "Enterprise",
-    description:
-      "Full autonomy, multi-cloud, SSO, and dedicated support with SLA.",
-    features: [
-      "Unlimited services / repos",
-      "Autonomous mode (no approvals)",
-      "Multi-cloud + on-prem",
-      "SSO, RBAC, audit logs",
-      "Custom integrations",
-      "Dedicated support + SLA",
-    ],
+    price: "Custom",
+    period: "",
+    description: "For orgs with custom infra and compliance needs.",
+    features: {
+      services: "Unlimited",
+      detect: true,
+      analyze: true,
+      fix: true,
+      autonomous: true,
+      skills: true,
+      observability: true,
+      github: true,
+      history: true,
+      selfHosted: true,
+      support: "Dedicated · Custom SLA",
+    },
     cta: "Talk to us",
+    href: "mailto:admin@deemwar.com",
+    highlight: false,
   },
 ];
 
-function checkFeature(planName: string, feature: string): boolean {
-  const map: Record<string, string[]> = {
-    "1 service / repo": ["Individual"],
-    "Up to 10 services / repos": ["Team", "Enterprise"],
-    "Unlimited services / repos": ["Enterprise"],
-    "Anomaly detection + RCA": ["Individual", "Team", "Enterprise"],
-    "PR-based fixes (manual approval)": ["Individual"],
-    "Guided or autonomous mode": ["Team", "Enterprise"],
-    "Autonomous mode (no approvals)": ["Enterprise"],
-    "Slack integration": ["Team", "Enterprise"],
-    "Shared run history + audit log": ["Team", "Enterprise"],
-    "Email support": ["Individual", "Team"],
-    "Multi-cloud + on-prem": ["Enterprise"],
-    "SSO, RBAC, audit logs": ["Enterprise"],
-    "Custom integrations": ["Enterprise"],
-    "Dedicated support + SLA": ["Enterprise"],
-  };
-  return (map[feature] || []).includes(planName);
-}
-
-const allFeatures = [
-  "1 service / repo",
-  "Up to 10 services / repos",
-  "Unlimited services / repos",
-  "Anomaly detection + RCA",
-  "PR-based fixes (manual approval)",
-  "Guided or autonomous mode",
-  "Autonomous mode (no approvals)",
-  "Slack integration",
-  "Shared run history + audit log",
-  "Email support",
-  "Multi-cloud + on-prem",
-  "SSO, RBAC, audit logs",
-  "Custom integrations",
-  "Dedicated support + SLA",
+const featureRows = [
+  { key: "services", label: "Services" },
+  { key: "detect", label: "Detect + analyze" },
+  { key: "fix", label: "AI-powered fix generation" },
+  { key: "autonomous", label: "Autonomous deploy mode" },
+  { key: "skills", label: "Agent skills" },
+  { key: "observability", label: "Grafana / Loki / Cloud Monitoring" },
+  { key: "github", label: "GitHub integration" },
+  { key: "history", label: "Run history + audit log" },
+  { key: "selfHosted", label: "Self-hosted" },
+  { key: "support", label: "Support" },
 ];
 
 export function Pricing() {
@@ -92,10 +94,11 @@ export function Pricing() {
             Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            Plans for every team size.
+            Self-hosted. Pay per service.
           </h2>
           <p className="text-base" style={{ color: "#6b665e" }}>
-            Pricing will be announced soon. Reach out to get on the early access list.
+            The agent runs on your infrastructure. We charge per monitored service.
+            No cloud lock-in, no data leaves your network.
           </p>
         </div>
 
@@ -103,14 +106,14 @@ export function Pricing() {
           <table className="w-full text-sm" style={{ color: "#1b1c19" }}>
             <thead>
               <tr style={{ borderBottom: "2px solid #e0d9cd" }}>
-                <th className="text-left py-4 pr-8 font-medium text-xs uppercase tracking-[0.15em]" style={{ color: "#735c41", verticalAlign: "middle" }}>
+                <th className="text-left py-4 pr-8 font-medium text-xs uppercase tracking-[0.15em]" style={{ color: "#735c41", verticalAlign: "middle", width: "33%" }}>
                   What&apos;s included
                 </th>
                 {plans.map((plan) => (
                   <th
                     key={plan.name}
                     className="text-left py-4 px-6 font-medium text-xs uppercase tracking-[0.15em]"
-                    style={{ color: "#735c41", verticalAlign: "middle" }}
+                    style={{ color: "#735c41", verticalAlign: "middle", width: "22%" }}
                   >
                     {plan.name}
                   </th>
@@ -118,22 +121,52 @@ export function Pricing() {
               </tr>
             </thead>
             <tbody>
-              {allFeatures.map((feature) => (
-                <tr key={feature} style={{ borderBottom: "1px solid #f0ede6" }}>
-                  <td className="py-3.5 pr-8" style={{ color: "#6b665e", verticalAlign: "middle" }}>
-                    {feature}
+              <tr>
+                <td className="py-3 pr-8" style={{ color: "#8b867f", verticalAlign: "middle" }}>
+                  Price
+                </td>
+                {plans.map((plan) => (
+                  <td key={plan.name} className="py-3 px-6" style={{ verticalAlign: "middle" }}>
+                    <span className="text-2xl font-bold" style={{ color: "#1b1c19" }}>{plan.price}</span>
+                    {plan.period && (
+                      <span className="text-xs ml-1" style={{ color: "#6b665e" }}>{plan.period}</span>
+                    )}
                   </td>
-                  {plans.map((plan) => (
-                    <td key={plan.name} className="py-3.5 px-6 text-center" style={{ verticalAlign: "middle" }}>
-                      {checkFeature(plan.name, feature) ? (
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="inline-block" style={{ color: "#735c41" }}>
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : (
-                        <span style={{ color: "#d5cfc4" }}>—</span>
-                      )}
-                    </td>
-                  ))}
+                ))}
+              </tr>
+              <tr>
+                <td className="py-3 pr-8" style={{ color: "#8b867f", verticalAlign: "middle" }}>
+                  Description
+                </td>
+                {plans.map((plan) => (
+                  <td key={plan.name} className="py-3 px-6" style={{ color: "#6b665e", verticalAlign: "middle" }}>
+                    {plan.description}
+                  </td>
+                ))}
+              </tr>
+              {featureRows.map((row, i) => (
+                <tr key={row.key} style={{ borderBottom: i < featureRows.length - 1 ? "1px solid #f0ede6" : "none" }}>
+                  <td className="py-3.5 pr-8" style={{ color: "#6b665e", verticalAlign: "middle" }}>
+                    {row.label}
+                  </td>
+                  {plans.map((plan) => {
+                    const val = plan.features[row.key];
+                    return (
+                      <td key={plan.name} className="py-3.5 px-6" style={{ verticalAlign: "middle" }}>
+                        {typeof val === "boolean" ? (
+                          val ? (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="inline-block" style={{ color: "#735c41" }}>
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <span style={{ color: "#d5cfc4" }}>—</span>
+                          )
+                        ) : (
+                          <span className="text-sm" style={{ color: "#1b1c19" }}>{val}</span>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
               <tr>
@@ -141,12 +174,12 @@ export function Pricing() {
                 {plans.map((plan) => (
                   <td key={plan.name} className="py-5 px-6" style={{ verticalAlign: "middle" }}>
                     <a
-                      href="https://deemwar.com/contact"
+                      href={plan.href}
                       className="inline-block px-6 py-2.5 rounded-full text-sm font-semibold transition-colors"
                       style={{
-                        backgroundColor: plan.name === "Team" ? "#735c41" : "transparent",
-                        color: plan.name === "Team" ? "#fff" : "#735c41",
-                        border: plan.name === "Team" ? "none" : "1px solid #d5cfc4",
+                        backgroundColor: plan.highlight ? "#735c41" : "transparent",
+                        color: plan.highlight ? "#fff" : "#735c41",
+                        border: plan.highlight ? "none" : "1px solid #d5cfc4",
                       }}
                     >
                       {plan.cta}
@@ -157,6 +190,16 @@ export function Pricing() {
             </tbody>
           </table>
         </div>
+
+        <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
+          Open plan is free forever — install via brew, go, npm, or pip. Team plan adds
+          autonomous mode, agent skills, and email support. Enterprise adds unlimited
+          services, self-hosted licensing, SSO, and a custom SLA.
+          Questions:{" "}
+          <a href="mailto:admin@deemwar.com" style={{ color: "#735c41", textDecoration: "underline" }}>
+            admin@deemwar.com
+          </a>
+        </p>
       </div>
     </section>
   );

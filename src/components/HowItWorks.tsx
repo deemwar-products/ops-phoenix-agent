@@ -2,28 +2,28 @@
 
 const steps = [
   {
-    num: "i.",
+    num: "01",
     title: "Detect",
     body:
-      "Pulls metrics from your Grafana / Cloud Monitoring backend. Learns your traffic patterns and flags deviations before they trigger cascading failures.",
+      "Queries your observability backend (Grafana, Loki, Cloud Monitoring) for errors in the last N minutes. Deduplicates by pattern and surfaces the top finding with frequency counts. Takes seconds.",
   },
   {
-    num: "ii.",
+    num: "02",
     title: "Analyze",
     body:
-      "Reads log entries, correlates with recent deploys and traces, and identifies the likely root cause. Returns a confidence score with the finding.",
+      "Sends the error summary to Claude, which correlates it with recent deploys, traces, and code changes. Returns: root cause, severity, confidence score, and a fix suggestion. No more cross-referencing dashboards manually.",
   },
   {
-    num: "iii.",
+    num: "03",
     title: "Fix",
     body:
-      "Generates a real code diff targeting the root cause. Opens a PR with the fix — but nothing deploys until a human reviews and approves it. You stay in control.",
+      "Claude writes a unified diff targeting the root cause. The agent applies it to a clone of your repo, runs your tests, commits on a feature branch, and opens a PR with the fix and the full analysis.",
   },
   {
-    num: "iv.",
-    title: "Verify",
+    num: "04",
+    title: "Deploy + Verify",
     body:
-      "Monitors key metrics post-deploy. If the fix worked, closes the incident. If not, rolls back automatically. Closes the loop — not just the ticket.",
+      "Nothing deploys without your approval. Once approved, the agent triggers CI/CD, monitors the deployment, and checks post-deploy metrics. If the fix didn't work, it rolls back automatically.",
   },
 ];
 
@@ -39,8 +39,11 @@ export function HowItWorks() {
             How it works
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            Every request takes the same four steps, locally.
+            From anomaly to deployed fix in under 5 minutes.
           </h2>
+          <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#6b665e" }}>
+            The same four steps an SRE would take — but automated, repeatable, and always consistent.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
@@ -66,8 +69,8 @@ export function HowItWorks() {
           </p>
           <p className="text-4xl font-bold mb-2" style={{ color: "#1b1c19" }}>&lt; 5 minutes</p>
           <p className="text-sm" style={{ color: "#6b665e" }}>
-            From first anomaly signal to verified fix. Zero human intervention required
-            (if you want it).
+            From first anomaly signal to verified fix. Zero human intervention required if you run in autonomous mode.
+            Guided mode waits for your approval before deploy.
           </p>
         </div>
       </div>
