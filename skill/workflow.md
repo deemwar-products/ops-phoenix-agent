@@ -1,13 +1,13 @@
-# Workflow: SRE Phoenix Agent (Cron)
+# Workflow: SRE Agent (Cron / Scheduled)
 
-How to set up the SRE Phoenix agent to run automatically on a schedule.
+How to set up SRE Agent to run automatically on a schedule.
 
 ## Prerequisites
 
-1. Ubuntu/Debian VM or macOS machine
-2. Access to Grafana API token
+1. Linux VM or macOS machine with network access to Grafana and GitHub
+2. Grafana API token with Viewer permissions
 3. `gh` CLI authenticated (`gh auth login`)
-4. `ANTHROPIC_API_KEY` environment variable set
+4. AI API key set in environment (e.g., `ANTHROPIC_API_KEY`)
 
 ## Setup Steps
 
@@ -18,68 +18,98 @@ How to set up the SRE Phoenix agent to run automatically on a schedule.
 brew install jq gh
 
 # Ubuntu/Debian
-apt update && apt install jq curl
+apt update && apt install jq curl python3
 ```
 
-### 2. Authenticate with GitHub
+### 2. Configure the Agent
 
 ```bash
-gh auth login --hostname github.com
-gh auth status
+sre-agent init
 ```
 
-### 3. Set Environment Variables
+This runs the interactive wizard that asks for:
+- Grafana URL
+- Grafana token path
+- GitHub repo
+- AI API key env var
+- Mode (guided / autonomous)
+
+Config is saved to `{config-dir}/config.json`.
+
+### 3. Test Connections
 
 ```bash
-export ANTHROPIC_API_KEY="sk-ant-..."  # Add to ~/.zshrc or ~/.bashrc
+sre-agent test-connections
 ```
 
-### 4. Copy Scripts
+Verify Grafana, GitHub, and AI connectivity before scheduling.
+
+### 4. Test a Dry Run
 
 ```bash
-cp infra/skills/reqsume-sre-phoenix/scripts/*.sh /usr/local/bin/
-chmod +x /usr/local/bin/check-errors.sh
+sre-agent detect --duration 5m
 ```
 
-### 5. Test Locally
+### 5. Schedule
+
+#### systemd timer (Linux)
 
 ```bash
-./check-errors.sh --dry-run
-./check-errors.sh --create-issue
+# /etc/systemd/system/sre-agent.service
+[Unit]
+Description=SRE Agent — autonomous incident cycle
+
+[Service]
+Type=oneshot
+ExecStart=/opt/sre-agent/bin/run.sh
+TimeoutStartSec=900
+
+# /etc/systemd/system/sre-agent.timer
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=90
+
+[Install]
+WantedBy=timers.target
 ```
 
-## Cron Setup
+```bash
+systemctl enable --now sre-agent.timer
+```
+
+#### cron (any Unix)
 
 ```bash
-# Edit crontab
-crontab -e
-
-# Add: run every hour at minute 0
-0 * * * * /usr/local/bin/check-errors.sh --create-issue >> ~/logs/sre-phoenix.log 2>&1
+# Run every hour at minute 17
+17 * * * * /opt/sre-agent/bin/run.sh >> /var/log/sre-agent/runs.log 2>&1
 ```
 
 ## Output Files
 
 | File | Purpose |
 |------|---------|
-| `~/logs/sre-phoenix.log` | Error summary |
-| `/tmp/sre-phoenix/errors-*.json` | Raw error data |
-| `/tmp/sre-phoenix/analyses/*.md` | Claude analysis |
+| `{config-dir}/history.json` | Run records (issues, PRs, deploys) |
+| `{config-dir}/memory.md` | Recent run summary |
+| `{config-dir}/errors-*.json` | Raw error data per run |
+| `/var/log/sre-agent/runs/*.log` | Run logs |
 
 ## Monitoring
 
 ```bash
 # Watch logs
-tail -f ~/logs/sre-phoenix.log
+tail -f /var/log/sre-agent/runs/*.log
 
 # Manual run
-./check-errors.sh --dry-run
+sre-agent full-cycle --duration 1h
 ```
 
 ## Troubleshooting
 
 | Problem | Solution |
-|---------|-----------|
-| "ANTHROPIC_API_KEY not set" | Add to shell profile |
+|---------|----------|
+| "config not found" | Run `sre-agent init` |
+| "AI API key not set" | Export the env var configured in `ai.api_key_env` |
 | "gh auth required" | Run `gh auth login` |
-| Cron not running | Check `launchctl list` or `systemctl status cron` |
+| "Grafana connection failed" | Check token file path and URL in config |
+| Cron not running | Check `systemctl status sre-agent.timer` or `crontab -l` |

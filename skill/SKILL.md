@@ -1,244 +1,138 @@
 ---
-name: reqsume-ops-phoenix
-description: Self-sufficient Ops agent for Reqsume. Monitors production, detects errors, analyzes with AI, creates issues/PRs, and deploys. Run "ops-phoenix" to start. Refuses to run outside a /reqsume-suffixed git checkout.
+name: sre-agent
+description: >
+  Autonomous SRE agent that monitors production logs, detects errors, analyzes root causes with AI,
+  and creates fixes as GitHub PRs. Trigger this skill  "detect incidents", "fix the outage",
+  "analyze the error logs", "open an issue for this", "deploy the fix", "run the SRE agent",
+  "autonomous incident response", "self-healing", "ops agent", "SRE automation",
+  "check logs", "what failed", "monitor production", "create a fix", "auto-remediate".
+  Also trigger when the user reports a production issue, an alert, or asks for help with an incident.
 ---
 
-# Ops Phoenix - Self-Sufficient Ops Agent
+# SRE Agent
 
-## What It Does
+Autonomous SRE agent: detects errors in production logs, uses AI to find root causes, and creates GitHub PRs with fixes.
 
-Ops Phoenix is a comprehensive ops agent that:
-1. **Monitors** - Checks production logs for errors
-2. **Analyzes** - Uses AI to find root causes
-3. **Fixes** - Generates and applies code fixes
-4. **Deploys** - Triggers production deployments
-5. **Monitors** - Waits for deployment to complete
-6. **Auto-Fixes** - If deploy fails, attempts to fix and retry
-7. **Reports** - Creates GitHub issues and PRs
+## Interfaces
 
-## Full Workflow
+This skill has two surfaces:
 
+1. **CLI** — run directly in terminal (human-driven)
+2. **Agent skill** — invoked by Claude Code, Codex, Cursor (AI-driven)
+
+Both use the same engine. Same results.
+
+## Variables
+
+- `{skill-root}` = the `skill/` directory where this file lives
+- `{config-dir}` = `~/.config/sre-agent/`
+- `{GRAFANA_TOKEN_PATH}` = path to Grafana API token file
+- `{GITHUB_REPO}` = target GitHub repo (owner/name)
+- `{GITHUB_TOKEN}` = GitHub token env var name
+- `{ANTHROPIC_API_KEY}` = Claude API key env var
+- `{ANTHROPIC_BASE_URL}` = Claude API base URL (default: https://api.anthropic.com)
+- `{CONTAINER_PATTERNS}` = comma-separated container regex patterns (e.g., `app-*,api-*`)
+- `{HOST_PATTERNS}` = comma-separated host patterns (e.g., `*`)
+
+## Configuration
+
+Config lives at `{config-dir}/config.json`. Run `sre-agent init` to create it interactively, or write it directly:
+
+```json
+{
+  "observability": {
+    "type": "grafana_self_hosted",
+    "grafana_url": "https://observability.example.com",
+    "grafana_token_path": "/etc/sre-agent/grafana-token",
+    "container_patterns": ["app-*", "api-*"],
+    "host_patterns": ["*"],
+    "error_patterns": ["level=~\"(?i)error|fatal|panic\""]
+  },
+  "github": {
+    "repo": "owner/repo",
+    "token_env_var": "GITHUB_TOKEN",
+    "base_branch": "main",
+    "labels": ["sre-alert"]
+  },
+  "ai": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514",
+    "api_key_env": "ANTHROPIC_API_KEY",
+    "api_url": "https://api.anthropic.com"
+  },
+  "cicd": {
+    "type": "github_actions",
+    "workflow_name": "Deploy to Production"
+  },
+  "deployment": {
+    "auto_merge": false,
+    "monitor_timeout": 300
+  }
+}
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      OPS PHOENIX FULL FLOW                          │
-└─────────────────────────────────────────────────────────────────────┘
 
-  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  1. DETECT   │ ──▶ │  2. ANALYZE  │ ──▶ │  3. ISSUE   │
-  │  Query Loki  │     │  Claude AI   │     │  GitHub     │
-  │  Find errors │     │  Root cause  │     │  Create     │
-  └──────────────┘     └──────────────┘     └──────────────┘
-                                                    │
-         ┌──────────────────────────────────────────┘
-         │
-         ▼
-  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  4. FIX     │ ──▶ │  5. PR       │ ──▶ │  6. DEPLOY  │
-  │  Claude AI   │     │  GitHub CLI   │     │  GitHub      │
-  │  Generate    │     │  Branch+PR    │     │  Actions    │
-  │  Code        │     └──────────────┘     └──────────────┘
-  └──────────────┘                              │
-                                                  ▼
-                                   ┌─────────────────────────┐
-                                   │  7. MONITOR            │
-                                   │  Wait for completion   │
-                                   └─────────────────────────┘
-                                                  │
-                              ┌────────────────────┴────────────────────┐
-                              │                                         │
-                              ▼                                         ▼
-                   ┌──────────────────┐                   ┌──────────────────┐
-                   │   SUCCESS        │                   │    FAILURE       │
-                   │   ✓ Done         │                   │   8. AUTO-FIX    │
-                   └──────────────────┘                   │   Analyze logs   │
-                                                           │   Apply fix      │
-                                                           │   Redeploy       │
-                                                           └──────────────────┘
-```
+All values are overridable by environment variables. Secrets (API keys, tokens) should NOT be in config — use env vars or a secrets file with mode 0600.
 
-## Quick Start
+## CLI Commands
+
+Run from the installed binary or `python3 {skill-root}/framework/ops_phoenix_main.py`:
 
 ```bash
-# Invoke the agent - it will ask for required info
-ops-phoenix
-
-# Or with specific action
-ops-phoenix --action detect
-ops-phoenix --action full-cycle
+sre-agent init                    # Interactive setup wizard
+sre-agent detect --duration 5m    # Query logs for errors
+sre-agent analyze --finding 0     # AI root-cause analysis on finding #0
+sre-agent fix --finding 0         # Generate fix diff for finding #0
+sre-agent pr --finding 0          # Create PR with the fix
+sre-agent full-cycle --duration 1h  # Run complete detect → analyze → issue → fix → deploy → monitor
+sre-agent status                  # Show current config and connections
+sre-agent test-connections        # Verify Grafana, GitHub, AI connectivity
 ```
 
-## First Time Setup
+Flags:
+- `--duration <window>` — time window for log queries: `5m`, `1h`, `6h`, `24h`, `7d` (default: `1h`)
+- `--finding <N>` — operate on the Nth detected error (0-indexed)
+- `--mode <guided|autonomous>` — guided waits for human approval; autonomous deploys automatically
+- `--dry-run` — detect + analyze only, no PRs or deploys
 
-The agent will ask for:
-1. **Claude API Key** - For AI analysis
-2. **Grafana Token Path** - Location of Grafana API token
-3. **GitHub Auth** - Verify gh CLI is authenticated
+## Agent-Driven Workflow
 
-## Usage Modes
+When invoked as a skill (not directly from CLI), Claude follows this workflow:
 
-| Mode | Description | Command Flag |
-|------|-------------|--------------|
-| `detect` | Check logs for errors only | `--action detect` |
-| `analyze` | Detect + AI analysis | `--action analyze` |
-| `issue` | Detect + analyze + create issue | `--action issue` |
-| `fix` | Detect + analyze + create PR | `--action fix` |
-| `deploy` | Detect + analyze + fix + deploy | `--action deploy` |
-| `full` | Complete cycle (all steps) | `--action full` |
-| `setup` | First-time configuration | `--action setup` |
-| `status` | Show current configuration | `--action status` |
+1. Read `references/steps/step-00-preflight.md` — verify config and connections
+2. Read `references/steps/step-01-query-logs.md` — detect errors
+3. Read `references/steps/step-02-analyze.md` — AI root-cause analysis
+4. Read `references/steps/step-03-report.md` — create issue, PR, deploy
 
-## Interactive Mode
+After each step, report findings to the user before proceeding.
 
-When invoked without flags, the agent will ask:
+## Step Files
 
-```
-=== Ops Phoenix Setup ===
+Each step lives in `{skill-root}/references/steps/`:
 
-Welcome to Ops Phoenix! This agent will help you monitor
-and fix issues in Reqsume production.
+| Step | File | Purpose |
+|------|------|---------|
+| 0 | `step-00-preflight.md` | Validate config, test connections |
+| 1 | `step-01-query-logs.md` | Query logs, deduplicate errors |
+| 2 | `step-02-analyze.md` | Send errors to AI, get root cause |
+| 3 | `step-03-report.md` | Create GitHub issue, PR, optionally deploy |
 
-First, I need some information:
+Read the relevant step file before executing it. Each step file contains the exact commands and logic.
 
-1. What action do you want to perform?
-   - detect (check logs only)
-   - full (complete cycle: detect → analyze → fix → deploy)
+## Modes
 
-2. Time window to check?
-   - 1h (last hour)
-   - 6h (last 6 hours)
-   - 24h (last day)
-   - 7d (last week)
+| Mode | Behavior |
+|------|----------|
+| `guided` | Detects → analyzes → opens PR → waits for human approval before deploy |
+| `autonomous` | Detects → analyzes → opens PR → auto-merges if CI passes → deploys → monitors |
 
-3. Environment?
-   - production (default)
-   - dev
+Default: `guided`. Autonomous mode requires explicit configuration (`deployment.auto_merge: true`).
 
-4. Claude API Key:
-   - Leave empty to use ANTHROPIC_API_KEY env var
-   - Or enter your key directly
+## Output
 
-5. Grafana Token Path:
-   - Leave empty for default: ~/Downloads/Archive/keys/grafana-api-token
-   - Or enter custom path
-```
+Each run produces:
+- **Console output** — structured log lines with timestamps
+- **GitHub issue** — if errors exceed threshold
+- **GitHub PR** — if AI produces a fix diff and threshold is met
+- **Run record** — persisted to `{config-dir}/history.json`
 
-## Configuration Files
-
-The agent creates config files for persistent settings:
-
-```
-~/.ops-phoenix/
-├── config.json          # Main configuration
-├── secrets.env          # Encrypted secrets (optional)
-└── history.log          # Run history
-```
-
-## Dashboard Monitored
-
-**URL:** https://observability.deemwar.com/d/reqsume-logs
-
-**Target Containers:**
-- `reqsume-app-web-*` - Reqsume UI/API containers
-- `reqsume-api-*` - API containers
-
-**NOT monitored:** External services (video-ai-worker, etc.)
-
-## Environment Variables Used
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes* | Claude API key (*or enter when prompted) |
-| `ANTHROPIC_BASE_URL` | No | Custom API proxy (default: https://api.opusmax.pro) |
-| `GRAFANA_TOKEN_PATH` | No | Grafana token location (default: ~/Downloads/Archive/keys/grafana-api-token) |
-| `GITHUB_REPO` | No | GitHub repo (default: muthuishere/reqsume) |
-
-## Output Examples
-
-### Detect Mode
-
-```
-=== OPS PHOENIX ===
-Action: detect
-Time: 1h
-Environment: production
-
-Querying Loki for errors...
-Found: 5 errors
-
-Errors:
-  - api: validation_failed (3x)
-  - api: timeout (2x)
-
-Use --action issue to create GitHub issue
-```
-
-### Full Cycle
-
-```
-=== OPS PHOENIX ===
-Action: full
-Time: 1h
-Environment: production
-
-[1/6] DETECT: Found 5 errors
-[2/6] ANALYZE: Root cause identified
-[3/6] ISSUE: #412 created
-[4/6] FIX: Code generated
-[5/6] PR: #413 created
-[6/6] DEPLOY: Triggered
-
-Done! Check your GitHub for issue #412
-```
-
-## Error Handling
-
-The agent will:
-1. **Ask for missing info** - If config incomplete, prompt for values
-2. **Validate inputs** - Check API keys, token paths, etc.
-3. **Report failures** - Clear error messages with suggestions
-4. **Continue on partial failure** - Don't stop if one step fails
-
-## VM Setup
-
-To run on a VM:
-
-```bash
-# 1. Clone the repo
-git clone git@github.com:muthuishere/reqsume.git
-cd reqsume
-
-# 2. Run setup
-python3 infra/skills/reqsume-ops-phoenix/scripts/ops-phoenix.py --action setup
-
-# 3. Add to crontab
-crontab -e
-# Add: */10 * * * * /path/to/ops-phoenix.py --action detect
-```
-
-## Security
-
-- **Never hardcode secrets** - Always use env vars or secure input
-- **Validate before use** - Check API keys work before running
-- **Audit trail** - All actions logged to history.log
-- **Rate limiting** - Max 1 fix per hour per error type
-
-## Files
-
-```
-reqsume-ops-phoenix/
-├── SKILL.md                        # This file
-├── README.md                       # Quick start
-├── scripts/
-│   ├── ops-phoenix.py              # Main agent (Python)
-│   ├── ops-phoenix-interactive.sh  # Interactive wrapper
-│   └── ops-phoenix-setup.sh        # Setup script
-├── workflows/
-│   ├── full-cycle.md               # Complete flow
-│   └── test-scenario.md            # Testing guide
-└── references/
-    └── error-patterns.md           # Known patterns
-```
-
-## Context
-
-See `framework/docs/MEMORY.md` for memory/state design and `~/.ops-phoenix/memory.md` for the latest runtime state snapshot.
+Run history is also exported to `{config-dir}/memory.md` for quick review.

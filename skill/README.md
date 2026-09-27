@@ -1,152 +1,66 @@
-# Ops Phoenix Agent
+# SRE Agent — Agent Skills
 
-Automated Ops agent that monitors **Reqsume Production Logs Dashboard** and runs the complete self-healing cycle.
+Agent skills for SRE Agent: production monitoring, AI-powered root-cause analysis, and autonomous fix generation.
 
-**Dashboard:** https://observability.deemwar.com/d/reqsume-logs
+## Contents
 
-## Quick Start
-
-```bash
-# Set Claude API key
-export ANTHROPIC_API_KEY="sk-ant-..."
-
-# Dry run (detect only)
-python3 scripts/check-errors.py --dry-run
-
-# Detect + create issue
-python3 scripts/check-errors.py --create-issue
-
-# Full cycle (detect + issue + fix + PR + deploy)
-python3 scripts/check-errors.py --full-cycle
-```
-
-## What It Does
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      OPS PHOENIX FULL FLOW                          │
-└─────────────────────────────────────────────────────────────────────┘
-
-  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  1. DETECT   │ ──▶ │  2. ANALYZE  │ ──▶ │  3. ISSUE   │
-  │  Query Loki  │     │  Claude AI   │     │  GitHub     │
-  │  Find errors │     │  Root cause  │     │  Create     │
-  └──────────────┘     └──────────────┘     └──────────────┘
-                                                    │
-         ┌──────────────────────────────────────────┘
-         │
-         ▼
-  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-  │  4. FIX     │ ──▶ │  5. PR       │ ──▶ │  6. DEPLOY  │
-  │  Claude AI   │     │  GitHub CLI   │     │  GitHub      │
-  │  Generate    │     │  Branch+PR    │     │  Actions    │
-  │  Code        │     └──────────────┘     └──────────────┘
-  └──────────────┘                              │
-                                                  ▼
-                                   ┌─────────────────────────┐
-                                   │  7. MONITOR            │
-                                   │  Wait for completion   │
-                                   └─────────────────────────┘
-                                                  │
-                              ┌────────────────────┴────────────────────┐
-                              │                                         │
-                              ▼                                         ▼
-                   ┌──────────────────┐                   ┌──────────────────┐
-                   │   SUCCESS        │                   │    FAILURE       │
-                   │   ✓ Done         │                   │   8. AUTO-FIX    │
-                   └──────────────────┘                   │   Analyze logs   │
-                                                           │   Apply fix      │
-                                                           │   Redeploy       │
-                                                           └──────────────────┘
-```
-
-## Auto-Fix on Deploy Failure
-
-If the deployment workflow fails, Ops Phoenix will:
-1. **Analyze failure** - Detect if it's a test, build, or deploy failure
-2. **Attempt fix** - Generate code fix if possible
-3. **Retry deploy** - Trigger new deployment
-4. **Create issue** - If auto-fix fails, create issue for manual review
-
-## Prerequisites
-
-1. **Claude API Key** — `ANTHROPIC_API_KEY` environment variable
-2. **Grafana Token** — at `~/Downloads/Archive/keys/grafana-api-token`
-3. **GitHub CLI** — authenticated with `gh auth login`
-
-## Target Containers
-
-| Container | Monitored |
-|-----------|-----------|
-| `reqsume-app-web-*` | ✅ Yes |
-| `reqsume-api-*` | ✅ Yes |
-| `video-ai-worker-*` | ❌ No (external) |
-| `kamal-proxy` | ❌ No |
-
-## Files
-
-```
-reqsume-ops-phoenix/
-├── SKILL.md                      # Full skill documentation
-├── README.md                     # This file
-├── scripts/
-│   └── check-errors.py          # Main agent script
-├── workflows/
-│   ├── full-cycle.md             # Complete flow
-│   └── test-scenario.md          # Testing guide
-└── references/
-    └── error-patterns.md         # Known patterns
-```
+| Path | Purpose |
+|------|---------|
+| `SKILL.md` | Skill definition (triggers, variables, config, commands) |
+| `references/steps/` | Step-by-step instructions for Claude |
+| `workflow.md` | Scheduled/cron setup guide |
+| `references/error-patterns.md` | Common error patterns and severity mappings |
 
 ## Usage
 
-```bash
-# Dry run - detect errors only
-python3 scripts/check-errors.py --dry-run
-
-# Detect + create GitHub issue
-python3 scripts/check-errors.py --create-issue
-
-# Full cycle (detect + issue + fix + PR + deploy)
-python3 scripts/check-errors.py --full-cycle
-
-# Custom time window
-python3 scripts/check-errors.py --window 7d --create-issue
-```
-
-## Cron Setup (for VM)
+Install the skill in Claude Code:
 
 ```bash
-# Edit crontab
-crontab -e
-
-# Run every hour at minute 0
-0 * * * * /opt/ops-phoenix/check-errors.py --create-issue >> /var/log/ops-phoenix.log 2>&1
+npx skills add sre-agent
 ```
 
-## Secrets for VM
+Or place the `skill/` directory in your agent's skills folder.
 
-```bash
-# Create directory
-sudo mkdir -p /opt/ops-phoenix/secrets
-sudo chmod 700 /opt/ops-phoenix/secrets
+## Trigger Phrases
 
-# Store Claude API key
-echo "sk-ant-..." | sudo tee /opt/ops-phoenix/secrets/claude-api-key
-sudo chmod 600 /opt/ops-phoenix/secrets/claude-api-key
+Claude activates this skill when you say things like:
+- "detect incidents" / "check production for errors"
+- "analyze the error logs"
+- "fix the outage"
+- "open an issue" / "create a PR"
+- "run the SRE agent"
+- "autonomous incident response"
+
+## Prerequisites
+
+1. SRE Agent installed (`sre-agent` binary or `ops_phoenix_main.py`)
+2. Config initialized (`sre-agent init`)
+3. Grafana token, GitHub auth, and AI API key configured
+
+## How It Works
+
+```
+User: "Check production for errors and fix anything critical"
+  → Claude activates sre-agent skill
+  → step-00: preflight (validate config + connections)
+  → step-01: query logs (detect errors)
+  → step-02: analyze (AI root cause)
+  → step-03: report (issue + PR + deploy)
+  → Claude reports results to user
 ```
 
-## Example Output
+## Modes
 
-```
-[2026-05-24 10:00:00] Ops Phoenix started
-Mode: dry-run
+- **guided** (default): detects, analyzes, opens PR — waits for human approval before deploy
+- **autonomous**: detects, analyzes, fixes, deploys, monitors — no human intervention
 
-=== DETECT ===
-Querying Loki for Reqsume production errors...
-✓ No errors found in reqsume-app containers (last 1h)
-```
+Set in `{config-dir}/config.json` under `deployment.mode` or pass `--mode` flag.
 
-## Context
+## State
 
-See `framework/docs/MEMORY.md` for memory/state design and `~/.ops-phoenix/memory.md` for the latest runtime state snapshot.
+All state lives in `{config-dir}/`:
+- `config.json` — configuration (non-secret)
+- `history.json` — run records (issues, PRs, deploys)
+- `memory.md` — recent run summary
+- `errors-*.json` — raw error data per run
+- `work/repo/` — cloned repo for fix generation

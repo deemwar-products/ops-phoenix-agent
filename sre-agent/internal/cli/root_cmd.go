@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"errors"
+	"os"
+	"strings"
 
 	"github.com/deemwar-products/sre-agent/internal/config"
 	"github.com/spf13/cobra"
@@ -11,6 +13,9 @@ import (
 
 // RootCommand builds the top-level `sre-agent` command tree.
 func RootCommand(stdout, stderr io.Writer) *cobra.Command {
+	// Pre-scan for -c/--config: cfg is needed to construct subcommands,
+	// which happens before cobra parses flags.
+	config.OverrideDir = scanConfigDirArg(os.Args[1:])
 	cfg := config.MustLoad()
 
 	root := &cobra.Command{
@@ -30,6 +35,26 @@ func RootCommand(stdout, stderr io.Writer) *cobra.Command {
 	root.AddCommand(NewAuthCommand(stdout, stderr))
 
 	return root
+}
+
+// scanConfigDirArg extracts the -c/--config value from raw args.
+// Handles "-c dir", "--config dir", "-c=dir", "--config=dir".
+func scanConfigDirArg(args []string) string {
+	for i, a := range args {
+		if a == "-c" || a == "--config" {
+			if i+1 < len(args) {
+				return args[i+1]
+			}
+			return ""
+		}
+		if v, ok := strings.CutPrefix(a, "--config="); ok {
+			return v
+		}
+		if v, ok := strings.CutPrefix(a, "-c="); ok {
+			return v
+		}
+	}
+	return ""
 }
 
 // Run executes the CLI from main.go.

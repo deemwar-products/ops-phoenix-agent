@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/deemwar-products/sre-agent/internal/config"
 	"gopkg.in/yaml.v3"
 )
 
@@ -102,14 +103,5 @@ func Recent(n int) ([]Run, error) {
 }
 
 func configDir() string {
-	base := os.Getenv("XDG_CONFIG_HOME")
-	if base != "" {
-		return filepath.Join(base, "sre-agent")
-	}
-	home, _ := os.UserHomeDir()
-	if home != "" {
-		return filepath.Join(home, ".config", "sre-agent")
-	}
-	// Fallback: relative path (should only happen in unusual envs)
-	return filepath.Join(".sre-agent")
+	return config.ConfigDir()
 }

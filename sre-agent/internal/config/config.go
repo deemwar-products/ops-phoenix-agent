@@ -12,8 +12,19 @@ import (
 // ErrNotConfigured is returned when no config file exists yet.
 var ErrNotConfigured = errors.New("config: not configured — run 'sre-agent setup'")
 
+// OverrideDir, when set (via the -c/--config flag), takes precedence over
+// the SRE_AGENT_CONFIG_DIR env var and the default location.
+var OverrideDir string
+
 // ConfigDir returns the directory where config is stored.
+// Precedence: -c/--config flag (OverrideDir) → SRE_AGENT_CONFIG_DIR → XDG/default.
 func ConfigDir() string {
+	if OverrideDir != "" {
+		return OverrideDir
+	}
+	if dir := os.Getenv("SRE_AGENT_CONFIG_DIR"); dir != "" {
+		return dir
+	}
 	base := os.Getenv("XDG_CONFIG_HOME")
 	if base == "" {
 		home, _ := os.UserHomeDir()
