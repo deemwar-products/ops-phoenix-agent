@@ -12,9 +12,9 @@ const capabilities = [
       "Sends the error summary to Claude, which correlates it with recent deploys and traces, identifies the root cause, and writes a unified diff that targets it directly.",
   },
   {
-    title: "PR + Deploy",
+    title: "PR + Merge",
     description:
-      "Opens a PR with the fix for your review. Nothing deploys without human approval. Post-deploy, it monitors key metrics and rolls back if the fix didn't hold.",
+      "Opens a PR with the fix for your review. Your team merges and deploys using their existing pipeline — ArgoCD, Flux, Jenkins, whatever. No new tools, no lock-in.",
   },
 ];
 
@@ -34,7 +34,7 @@ export function WhatItDoes() {
           </h2>
           <p className="text-base sm:text-lg leading-relaxed max-w-2xl" style={{ color: "#8b867f" }}>
             No cloud dependency. No data leaves your infrastructure. The agent runs locally,
-            reads your logs, and writes fixes to your repo.
+            reads your logs, and opens a PR — you merge and deploy through your existing tools.
           </p>
         </div>
 
@@ -47,7 +47,7 @@ export function WhatItDoes() {
               >
                 {cap.title === "Detect" && "01 — QUERY"}
                 {cap.title === "Analyze + Fix" && "02 — AI + CODE"}
-                {cap.title === "PR + Deploy" && "03 — SHIP"}
+                {cap.title === "PR + Merge" && "03 — REVIEW"}
               </div>
               <h3
                 className="text-xl font-bold mb-3"

@@ -85,12 +85,18 @@ export function TwoSurfaces() {
               your scripts, cron, or CI pipeline.
             </p>
             <ColoredTerminalPanel label="terminal">
-              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --duration 5m{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Found 2 errors. P1: 5xx spike /api/resumes{'\n\n'}</span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}</span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --approve{`\n`}
-              <span style={{ color: "#3fb950" }}>{'›'} PR #482 opened. CI passed. Awaiting your approval.{'\n'}</span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --duration 5m{'\n'}
+              <span style={{ color: "#8b949e" }}>
+                {'›'} Found 2 errors. P1: 5xx spike /api/resumes{'\n\n'}
+              </span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{'\n'}
+              <span style={{ color: "#8b949e" }}>
+                {'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}
+              </span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --approve{'\n'}
+              <span style={{ color: "#3fb950" }}>
+                {'›'} PR #482 opened. CI passed. Team merges and deploys via their pipeline.{'\n'}
+              </span>
             </ColoredTerminalPanel>
           </div>
 
@@ -116,17 +122,13 @@ export function TwoSurfaces() {
                 </span>
               </div>
               <pre className="p-5 text-sm font-mono leading-7 overflow-x-auto" style={{ color: "#c9d1d9" }}>
-                <span style={{ color: "#ff7b72" }}>You:</span>{" "}Check production for errors and fix anything critical.{`\n\n`}
-                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
-                <span style={{ color: "#58a6ff" }}>detect --duration 1h</span>{`\n\n`}
+                <span style={{ color: "#ff7b72" }}>You:</span> Check production for errors and fix anything critical.{'\n\n'}
+                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> {"→"} <span style={{ color: "#58a6ff" }}>detect --duration 1h</span>{'\n\n'}
                 <span style={{ color: "#c9d1d9" }}>→ Found 3 errors. P1: 5xx spike /api/resumes.{'\n\n'}</span>
-                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
-                <span style={{ color: "#58a6ff" }}>analyze --finding 0</span>{`\n\n`}
+                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> {"→"} <span style={{ color: "#58a6ff" }}>analyze --finding 0</span>{'\n\n'}
                 <span style={{ color: "#c9d1d9" }}>→ Root cause: token refresh regression. Fix confidence: 0.91.{'\n\n'}</span>
-                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> →{" "}
-                <span style={{ color: "#58a6ff" }}>fix --finding 0 --approve</span>{`\n\n`}
-                <span style={{ color: "#3fb950" }}>→ PR #482 opened. CI passed. Deploy approved.{'\n'}</span>
-                <span style={{ color: "#3fb950" }}>→ Incident resolved in 3m 12s.{'\n'}</span>
+                <span style={{ color: "#8b949e" }}>{'(calls sre-agent skill)'}</span> {"→"} <span style={{ color: "#58a6ff" }}>fix --finding 0 --approve</span>{'\n\n'}
+                <span style={{ color: "#3fb950" }}>→ PR #482 opened. Team reviews, merges, deploys.{'\n'}</span>
               </pre>
             </div>
           </div>

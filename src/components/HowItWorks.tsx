@@ -21,9 +21,9 @@ const steps = [
   },
   {
     num: "04",
-    title: "Deploy + Verify",
+    title: "Merge + Deploy",
     body:
-      "Nothing deploys without your approval. Once approved, the agent triggers CI/CD, monitors the deployment, and checks post-deploy metrics. If the fix didn't work, it rolls back automatically.",
+      "The team reviews the PR, merges it, and deploys using their existing pipeline — ArgoCD, Flux, Jenkins, whatever. The agent's job ends at the PR. Your deploy tools stay exactly as they are.",
   },
 ];
 
@@ -39,10 +39,10 @@ export function HowItWorks() {
             How it works
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            From anomaly to deployed fix in under 5 minutes.
+            From anomaly to merged fix in minutes.
           </h2>
           <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#6b665e" }}>
-            The same four steps an SRE would take — but automated, repeatable, and always consistent.
+            The agent finds the problem and writes the fix. Your team reviews and deploys using their existing tools.
           </p>
         </div>
 
@@ -69,8 +69,8 @@ export function HowItWorks() {
           </p>
           <p className="text-4xl font-bold mb-2" style={{ color: "#1b1c19" }}>&lt; 5 minutes</p>
           <p className="text-sm" style={{ color: "#6b665e" }}>
-            From first anomaly signal to verified fix. Zero human intervention required if you run in autonomous mode.
-            Guided mode waits for your approval before deploy.
+            From first anomaly signal to open PR. The team reviews, merges, and deploys through their existing pipeline.
+            No new tools, no new process, no lock-in.
           </p>
         </div>
       </div>

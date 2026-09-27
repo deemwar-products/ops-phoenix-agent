@@ -73,7 +73,7 @@ const featureRows = [
   { key: "services", label: "Services" },
   { key: "detect", label: "Detect + analyze" },
   { key: "fix", label: "AI-powered fix generation" },
-  { key: "autonomous", label: "Autonomous deploy mode" },
+  { key: "autonomous", label: "Autonomous mode (runs full cycle, opens PR for review)" },
   { key: "skills", label: "Agent skills" },
   { key: "observability", label: "Grafana / Loki / Cloud Monitoring" },
   { key: "github", label: "GitHub integration" },
@@ -193,7 +193,7 @@ export function Pricing() {
 
         <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
           Open plan is free forever — install via brew, go, npm, or pip. Team plan adds
-          autonomous mode, agent skills, and email support. Enterprise adds unlimited
+          autonomous mode (full-cycle, PR for team review). Enterprise adds unlimited
           services, self-hosted licensing, SSO, and a custom SLA.
           Questions:{" "}
           <a href="mailto:admin@deemwar.com" style={{ color: "#735c41", textDecoration: "underline" }}>
