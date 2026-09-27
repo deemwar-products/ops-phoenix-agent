@@ -46,7 +46,7 @@ export function Navbar() {
           ))}
           <a
             href="mailto:admin@deemwar.com"
-            className="font-mono text-xs tracking-wider"
+            className="font-mono text-xs tracking-wider hover:opacity-70 transition-opacity"
             style={{ color: "#735c41" }}
           >
             admin@deemwar.com
