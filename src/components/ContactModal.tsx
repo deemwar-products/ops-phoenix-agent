@@ -28,7 +28,13 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
   return (
     <>
       {trigger ? (
-        <button onClick={() => setOpen(true)}>{trigger}</button>
+        <button
+          onClick={() => setOpen(true)}
+          className="p-0 border-none bg-transparent cursor-pointer"
+          style={{ padding: 0, border: "none", background: "transparent" }}
+        >
+          {trigger}
+        </button>
       ) : (
         <button
           onClick={() => setOpen(true)}
