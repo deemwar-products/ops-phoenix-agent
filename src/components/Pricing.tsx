@@ -20,7 +20,7 @@ const plans = [
   },
   {
     name: "Support",
-    price: "$500",
+    price: "$100",
     period: "/month",
     description: "For teams running SRE Agent in production.",
     features: [
@@ -52,18 +52,6 @@ const plans = [
   },
 ];
 
-const featureRows = [
-  { key: "services", label: "Services" },
-  { key: "detect", label: "Detect + analyze" },
-  { key: "fix", label: "AI-powered fix generation" },
-  { key: "skills", label: "Agent skills" },
-  { key: "observability", label: "Grafana / Loki" },
-  { key: "github", label: "GitHub integration" },
-  { key: "history", label: "Run history + audit log" },
-  { key: "selfHosted", label: "Self-hosted" },
-  { key: "support", label: "Support" },
-];
-
 export function Pricing() {
   return (
     <section id="pricing" className="py-32 px-6" style={{ backgroundColor: "#fdfcf8" }}>
@@ -85,96 +73,69 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm" style={{ color: "#1b1c19" }}>
-            <thead>
-              <tr style={{ borderBottom: "2px solid #e0d9cd" }}>
-                <th className="text-left py-4 pr-8 font-medium text-xs uppercase tracking-[0.15em]" style={{ color: "#735c41", verticalAlign: "middle", width: "33%" }}>
-                  What&apos;s included
-                </th>
-                {plans.map((plan) => (
-                  <th
-                    key={plan.name}
-                    className="text-left py-4 px-6 font-medium text-xs uppercase tracking-[0.15em]"
-                    style={{ color: "#735c41", verticalAlign: "middle", width: "22%" }}
-                  >
-                    {plan.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="py-3 pr-8" style={{ color: "#8b867f", verticalAlign: "middle" }}>
-                  Price
-                </td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="py-3 px-6" style={{ verticalAlign: "middle" }}>
-                    <span className="text-2xl font-bold" style={{ color: "#1b1c19" }}>{plan.price}</span>
-                    {plan.period && (
-                      <span className="text-xs ml-1" style={{ color: "#6b665e" }}>{plan.period}</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="py-3 pr-8" style={{ color: "#8b867f", verticalAlign: "middle" }}>
-                  Description
-                </td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="py-3 px-6" style={{ color: "#6b665e", verticalAlign: "middle" }}>
-                    {plan.description}
-                  </td>
-                ))}
-              </tr>
-              {featureRows.map((row, i) => (
-                <tr key={row.key} style={{ borderBottom: i < featureRows.length - 1 ? "1px solid #f0ede6" : "none" }}>
-                  <td className="py-3.5 pr-8" style={{ color: "#6b665e", verticalAlign: "middle" }}>
-                    {row.label}
-                  </td>
-                  {plans.map((plan) => {
-                    const val = plan.features[row.key];
-                    return (
-                      <td key={plan.name} className="py-3.5 px-6" style={{ verticalAlign: "middle" }}>
-                        {typeof val === "boolean" ? (
-                          val ? (
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="inline-block" style={{ color: "#735c41" }}>
-                              <path d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <span style={{ color: "#d5cfc4" }}>—</span>
-                          )
-                        ) : (
-                          <span className="text-sm" style={{ color: "#1b1c19" }}>{val}</span>
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-              <tr>
-                <td className="py-5 pr-8" style={{ verticalAlign: "middle" }} />
-                {plans.map((plan) => (
-                  <td key={plan.name} className="py-5 px-6" style={{ verticalAlign: "middle" }}>
-                    <a
-                      href={plan.href}
-                      className="inline-block px-6 py-2.5 rounded-full text-sm font-semibold transition-colors"
-                      style={{
-                        backgroundColor: plan.highlight ? "#735c41" : "transparent",
-                        color: plan.highlight ? "#fff" : "#735c41",
-                        border: plan.highlight ? "none" : "1px solid #d5cfc4",
-                      }}
-                    >
-                      {plan.cta}
-                    </a>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              className="rounded-2xl overflow-hidden"
+              style={{
+                border: plan.highlight ? "2px solid #735c41" : "1px solid #e0d9cd",
+                backgroundColor: "#ffffff",
+              }}
+            >
+              <div className="px-6 pt-6 pb-4" style={{ borderBottom: "1px solid #f0ede6" }}>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] mb-3 font-mono" style={{ color: "#735c41" }}>
+                  {plan.name}
+                </p>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-3xl font-bold" style={{ color: "#1b1c19" }}>{plan.price}</span>
+                  {plan.period && (
+                    <span className="text-xs" style={{ color: "#6b665e" }}>{plan.period}</span>
+                  )}
+                </div>
+                <p className="text-xs" style={{ color: "#6b665e" }}>{plan.description}</p>
+              </div>
+
+              <div className="px-6 py-5">
+                <ul className="space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2.5 text-sm" style={{ color: "#1b1c19" }}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        className="mt-0.5 flex-shrink-0"
+                        style={{ color: "#735c41" }}
+                      >
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="px-6 pb-6">
+                <a
+                  href={plan.href}
+                  className="block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
+                  style={{
+                    backgroundColor: plan.highlight ? "#735c41" : "transparent",
+                    color: plan.highlight ? "#fff" : "#735c41",
+                    border: plan.highlight ? "none" : "1px solid #d5cfc4",
+                  }}
+                >
+                  {plan.cta}
+                </a>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
+        <p className="mt-10 text-sm" style={{ color: "#8b867f" }}>
           Open plan is free forever — install via brew, go, npm, or pip. The source is
           MIT licensed on GitHub. Support and Enterprise plans provide email support,
           setup assistance, custom integrations, and SLAs.
