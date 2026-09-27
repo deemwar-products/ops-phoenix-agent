@@ -60,7 +60,7 @@ export function Hero() {
 
           <div className="flex items-center gap-4 mt-6">
             <p className="text-xs" style={{ color: "#8b867f" }}>
-              brew install · go install · npm · pip
+              go install · from source — MIT licensed
             </p>
             <a
               href="https://github.com/deemwar-products/ops-phoenix-agent"

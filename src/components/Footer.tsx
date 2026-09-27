@@ -1,5 +1,7 @@
 "use client";
 
+import { ContactModal } from "./ContactModal";
+
 export function Footer() {
   return (
     <footer
@@ -17,9 +19,13 @@ export function Footer() {
           <a href="https://github.com/deemwar-products/ops-phoenix-agent" className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer">
             GitHub
           </a>
-          <a href="mailto:admin@deemwar.com" className="hover:opacity-70 transition-opacity">
-            Contact
-          </a>
+          <ContactModal
+            trigger={
+              <span className="hover:opacity-70 transition-opacity cursor-pointer" style={{ color: "#6b665e" }}>
+                Contact
+              </span>
+            }
+          />
           <a href="https://deemwar.com" className="hover:opacity-70 transition-opacity">
             Deemwar
           </a>

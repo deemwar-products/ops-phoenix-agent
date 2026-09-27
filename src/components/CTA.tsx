@@ -1,5 +1,7 @@
 "use client";
 
+import { ContactModal } from "./ContactModal";
+
 export function CTA() {
   return (
     <section id="cta" className="py-32 px-6" style={{ backgroundColor: "#0f1117" }}>
@@ -12,16 +14,16 @@ export function CTA() {
           For support, custom integrations, or enterprise SLAs, reach out directly.
         </p>
         <div className="flex flex-col items-center gap-4">
-          <a
-            href="mailto:admin@deemwar.com?subject=SRE%20Agent%20inquiry"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold transition-colors"
-            style={{ backgroundColor: "#735c41", color: "#fff" }}
-          >
-            admin@deemwar.com
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
+          <ContactModal
+            trigger={
+              <span className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold cursor-pointer" style={{ backgroundColor: "#735c41", color: "#fff" }}>
+                admin@deemwar.com
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </span>
+            }
+          />
           <p className="text-xs" style={{ color: "#6b665e" }}>
             Support: $100/month · Enterprise: custom pricing
           </p>

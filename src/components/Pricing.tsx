@@ -151,13 +151,17 @@ export function Pricing() {
         </div>
 
         <p className="mt-10 text-sm" style={{ color: "#8b867f" }}>
-          Open plan is free forever — install via brew, go, npm, or pip. The source is
+          Open plan is free forever — install via Go or from source. The source is
           MIT licensed on GitHub. Support and Enterprise plans provide email support,
           setup assistance, custom integrations, and SLAs.
           Questions:{" "}
-          <a href="mailto:admin@deemwar.com" style={{ color: "#735c41", textDecoration: "underline" }}>
-            admin@deemwar.com
-          </a>
+          <ContactModal
+            trigger={
+              <span className="cursor-pointer" style={{ color: "#735c41", textDecoration: "underline" }}>
+                admin@deemwar.com
+              </span>
+            }
+          />
         </p>
       </div>
     </section>
