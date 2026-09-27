@@ -8,28 +8,36 @@ export function Hero() {
     >
       <div className="max-w-6xl mx-auto px-6 w-full">
         <div className="max-w-3xl">
-          <p
-            className="text-xs font-semibold uppercase tracking-[0.2em] mb-6"
-            style={{ color: "#735c41" }}
-          >
-            CLI · Agent skills · Self-hosted · MIT licensed
-          </p>
+          <div className="flex flex-wrap gap-2 mb-8">
+            {["CLI", "Agent skills", "Self-hosted", "MIT licensed"].map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-mono font-medium uppercase tracking-[0.15em] px-3 py-1.5 rounded-full"
+                style={{ backgroundColor: "#f0ede6", color: "#735c41", border: "1px solid #e0d9cd" }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
           <h1
             className="text-5xl sm:text-6xl md:text-7xl leading-[1.05] tracking-tight mb-6"
             style={{ color: "#1b1c19" }}
           >
-            Your production
+            From alert to PR.
             <br />
-            <span style={{ color: "#735c41" }}>fixes itself.</span>
+            <span style={{ color: "#735c41" }}>No manual debugging.</span>
           </h1>
+
           <p
             className="text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl"
             style={{ color: "#6b665e" }}
           >
-            SRE Agent watches your logs, finds the root cause, writes the fix,
-            and opens a PR — before your on-call engineer finishes reading the alert.
-            Runs on your machine. Free and open source.
+            SRE Agent queries your logs, finds the root cause, writes a code fix,
+            and opens a PR — while your engineer is still reading the alert.
+            Runs locally. No cloud. MIT licensed.
           </p>
+
           <div className="flex flex-wrap gap-4">
             <a
               href="#install"
@@ -49,9 +57,21 @@ export function Hero() {
               See how it works
             </a>
           </div>
-          <p className="mt-6 text-xs" style={{ color: "#8b867f" }}>
-            brew install · go install · npm · pip · MIT license
-          </p>
+
+          <div className="flex items-center gap-4 mt-6">
+            <p className="text-xs" style={{ color: "#8b867f" }}>
+              brew install · go install · npm · pip
+            </p>
+            <a
+              href="https://github.com/deemwar-products/ops-phoenix-agent"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono hover:opacity-70 transition-opacity"
+              style={{ color: "#735c41" }}
+            >
+              View on GitHub →
+            </a>
+          </div>
         </div>
 
         <div className="mt-16 max-w-2xl">
