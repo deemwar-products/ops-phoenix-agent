@@ -53,7 +53,7 @@ export function Install() {
             Install
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-3" style={{ color: "#1b1c19" }}>
-            brew, go, pip, npm, winget. Take your pick.
+            One command. That&apos;s it.
           </h2>
           <p className="text-base" style={{ color: "#6b665e" }}>
             One binary. No runtime. Runs on macOS, Linux, Windows — inside a container,
@@ -76,29 +76,6 @@ export function Install() {
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
                   <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    macOS / Linux
-                  </span>
-                </div>
-                <CopyButton text="brew install deemwar-products/tap/sre-agent" dark />
-              </div>
-              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                brew install deemwar-products/tap/sre-agent
-              </pre>
-            </div>
-
-            <div
-              className="rounded-xl overflow-hidden mb-4"
-              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <div
-                className="flex items-center justify-between px-4 py-3"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
-                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
                     any platform with Go
                   </span>
                 </div>
@@ -106,29 +83,6 @@ export function Install() {
               </div>
               <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
                 go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest
-              </pre>
-            </div>
-
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <div
-                className="flex items-center justify-between px-4 py-3"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
-                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    PowerShell / winget
-                  </span>
-                </div>
-                <CopyButton text="winget install DeemwarProducts.SREAgent" dark />
-              </div>
-              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                winget install DeemwarProducts.SREAgent
               </pre>
             </div>
           </div>
@@ -147,39 +101,22 @@ export function Install() {
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
                   <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    npm / npx
+                    from source
                   </span>
                 </div>
-                <CopyButton text="npm install -g sre-agent" dark />
+                <CopyButton text="git clone https://github.com/deemwar-products/sre-agent.git && cd sre-agent && go build ./cmd/sre-agent" dark />
               </div>
               <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                npm install -g sre-agent
-              </pre>
-            </div>
-
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ backgroundColor: "#0f1117", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <div
-                className="flex items-center justify-between px-4 py-3"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
-                  <span className="ml-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
-                    pip / PyPI
-                  </span>
-                </div>
-                <CopyButton text="pip install sre-agent" dark />
-              </div>
-              <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                pip install sre-agent
+                git clone https://github.com/deemwar-products/sre-agent.git{'\n'}cd sre-agent && go build ./cmd/sre-agent
               </pre>
             </div>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-xs" style={{ color: "#8b867f" }}>
+            Requires Go 1.24+. brew, npm, pip, and winget packages coming soon.
+          </p>
         </div>
 
         <div className="mt-12">
@@ -247,11 +184,6 @@ export function Install() {
             </div>
           </div>
         </div>
-
-        <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
-          Requires Go 1.22+ for the binary install. The npm and pip packages bundle
-          the runtime. No Python, no Java, no .NET required on the target machine.
-        </p>
       </div>
     </section>
   );
