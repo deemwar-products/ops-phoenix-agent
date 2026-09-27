@@ -23,7 +23,7 @@ export function CTA() {
             </svg>
           </a>
           <p className="text-xs" style={{ color: "#6b665e" }}>
-            Support: $500/month · Enterprise: custom pricing
+            Support: $100/month · Enterprise: custom pricing
           </p>
         </div>
       </div>
