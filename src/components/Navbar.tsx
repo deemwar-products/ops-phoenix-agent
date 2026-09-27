@@ -44,11 +44,18 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
+          <a
+            href="mailto:admin@deemwar.com"
+            className="font-mono text-xs tracking-wider"
+            style={{ color: "#735c41" }}
+          >
+            admin@deemwar.com
+          </a>
         </div>
 
         <a
-          href="mailto:admin@deemwar.com?subject=SRE%20Agent%20inquiry"
-          className="px-5 py-2 text-sm font-semibold rounded-full transition-colors"
+          href="mailto:admin@deemwar.com"
+          className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors"
           style={{ backgroundColor: "#735c41", color: "#fff" }}
         >
           Contact

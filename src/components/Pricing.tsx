@@ -3,68 +3,51 @@
 const plans = [
   {
     name: "Open",
-    price: "$0",
+    price: "Free",
     period: "forever",
-    description: "For solo engineers and side projects.",
-    features: {
-      services: "1",
-      detect: true,
-      analyze: true,
-      fix: true,
-      autonomous: false,
-      skills: false,
-      observability: true,
-      github: true,
-      history: true,
-      selfHosted: true,
-      support: "Community",
-    },
+    description: "For solo engineers, side projects, and evaluation.",
+    features: [
+      "Unlimited services",
+      "Detect + analyze + fix",
+      "All integrations (Grafana, Loki, GitHub)",
+      "Agent skills (Claude Code, Codex, Cursor)",
+      "MIT licensed — no restrictions",
+      "Community support (GitHub Issues)",
+    ],
     cta: "Install free",
     href: "#install",
     highlight: false,
   },
   {
-    name: "Team",
-    price: "$49",
-    period: "/service/month",
-    description: "For teams running production services.",
-    features: {
-      services: "Up to 5",
-      detect: true,
-      analyze: true,
-      fix: true,
-      autonomous: true,
-      skills: true,
-      observability: true,
-      github: true,
-      history: true,
-      selfHosted: true,
-      support: "Email · 48h SLA",
-    },
-    cta: "Start trial",
-    href: "mailto:admin@deemwar.com",
+    name: "Support",
+    price: "$500",
+    period: "/month",
+    description: "For teams running SRE Agent in production.",
+    features: [
+      "Everything in Open",
+      "Email support · 48h SLA",
+      "Setup assistance",
+      "Custom integration help",
+      "Priority bug fixes",
+    ],
+    cta: "Get support",
+    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Support%20plan%20inquiry",
     highlight: true,
   },
   {
     name: "Enterprise",
     price: "Custom",
     period: "",
-    description: "For orgs with custom infra and compliance needs.",
-    features: {
-      services: "Unlimited",
-      detect: true,
-      analyze: true,
-      fix: true,
-      autonomous: true,
-      skills: true,
-      observability: true,
-      github: true,
-      history: true,
-      selfHosted: true,
-      support: "Dedicated · Custom SLA",
-    },
+    description: "For orgs with custom infra, compliance, and SLA needs.",
+    features: [
+      "Everything in Support",
+      "Dedicated support · Custom SLA",
+      "Custom integrations",
+      "On-prem deployment assistance",
+      "Training + onboarding",
+    ],
     cta: "Talk to us",
-    href: "mailto:admin@deemwar.com",
+    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Enterprise%20inquiry",
     highlight: false,
   },
 ];
@@ -73,9 +56,8 @@ const featureRows = [
   { key: "services", label: "Services" },
   { key: "detect", label: "Detect + analyze" },
   { key: "fix", label: "AI-powered fix generation" },
-  { key: "autonomous", label: "Autonomous mode (runs full cycle, opens PR for review)" },
   { key: "skills", label: "Agent skills" },
-  { key: "observability", label: "Grafana / Loki / Cloud Monitoring" },
+  { key: "observability", label: "Grafana / Loki" },
   { key: "github", label: "GitHub integration" },
   { key: "history", label: "Run history + audit log" },
   { key: "selfHosted", label: "Self-hosted" },
@@ -94,11 +76,12 @@ export function Pricing() {
             Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            Self-hosted. Pay per service.
+            Free to use. Support when you need it.
           </h2>
           <p className="text-base" style={{ color: "#6b665e" }}>
-            The agent runs on your infrastructure. We charge per monitored service.
-            No cloud lock-in, no data leaves your network.
+            SRE Agent is MIT licensed — use it however you want, no restrictions.
+            Paid tiers are for teams that need professional support, custom integrations,
+            and guaranteed response times.
           </p>
         </div>
 
@@ -192,9 +175,9 @@ export function Pricing() {
         </div>
 
         <p className="mt-8 text-sm" style={{ color: "#8b867f" }}>
-          Open plan is free forever — install via brew, go, npm, or pip. Team plan adds
-          autonomous mode (full-cycle, PR for team review). Enterprise adds unlimited
-          services, self-hosted licensing, SSO, and a custom SLA.
+          Open plan is free forever — install via brew, go, npm, or pip. The source is
+          MIT licensed on GitHub. Support and Enterprise plans provide email support,
+          setup assistance, custom integrations, and SLAs.
           Questions:{" "}
           <a href="mailto:admin@deemwar.com" style={{ color: "#735c41", textDecoration: "underline" }}>
             admin@deemwar.com

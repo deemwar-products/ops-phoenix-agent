@@ -12,7 +12,7 @@ export function Hero() {
             className="text-xs font-semibold uppercase tracking-[0.2em] mb-6"
             style={{ color: "#735c41" }}
           >
-            Open-source CLI · Agent skills · Self-hosted
+            CLI · Agent skills · Self-hosted · MIT licensed
           </p>
           <h1
             className="text-5xl sm:text-6xl md:text-7xl leading-[1.05] tracking-tight mb-6"
@@ -28,7 +28,7 @@ export function Hero() {
           >
             SRE Agent watches your logs, finds the root cause, writes the fix,
             and opens a PR — before your on-call engineer finishes reading the alert.
-            Runs on your machine. No cloud. No vendor lock-in.
+            Runs on your machine. Free and open source.
           </p>
           <div className="flex flex-wrap gap-4">
             <a
@@ -50,7 +50,7 @@ export function Hero() {
             </a>
           </div>
           <p className="mt-6 text-xs" style={{ color: "#8b867f" }}>
-            MIT licensed · brew install · go install · winget · npm · pip
+            brew install · go install · npm · pip · MIT license
           </p>
         </div>
 
@@ -71,14 +71,20 @@ export function Hero() {
               </span>
             </div>
             <pre className="p-5 text-sm font-mono leading-7 overflow-x-auto" style={{ color: "#c9d1d9" }}>
-              <span style={{ color: "#735c41" }}>$</span>{" "}sre-agent full-cycle --duration 1h{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Scanning Grafana Loki for errors...{'\n'}</span>
-              <span style={{ color: "#8b949e" }}>{'›'} Found 3 errors. P1: 5xx spike /api/resumes{'\n\n'}</span>
-              <span style={{ color: "#735c41" }}>$</span>{" "}sre-agent analyze --finding 0{`\n`}
-              <span style={{ color: "#8b949e" }}>{'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}</span>
-              <span style={{ color: "#735c41" }}>$</span>{" "}sre-agent fix --finding 0 --approve{`\n`}
-              <span style={{ color: "#3fb950" }}>{'›'} PR #482 opened: revert token validation path{'\n'}</span>
-              <span style={{ color: "#3fb950" }}>{'›'} CI passed. Deploy approved. Incident resolved in 3m 12s.{'\n'}</span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent full-cycle --duration 1h{'\n'}
+              <span style={{ color: "#8b949e" }}>
+                {'›'} Scanning Grafana Loki for errors...{'\n'}
+                {'›'} Found 3 errors. P1: 5xx spike /api/resumes{'\n\n'}
+              </span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{'\n'}
+              <span style={{ color: "#8b949e" }}>
+                {'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}
+              </span>
+              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --approve{'\n'}
+              <span style={{ color: "#3fb950" }}>
+                {'›'} PR #482 opened: revert token validation path{'\n'}
+                {'›'} CI passed. Team reviews and deploys via their pipeline.{'\n'}
+              </span>
             </pre>
           </div>
         </div>
