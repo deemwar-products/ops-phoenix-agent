@@ -1,5 +1,7 @@
 "use client";
 
+import { VideoLightbox } from "./VideoLightbox";
+
 export function Hero() {
   return (
     <section
@@ -9,7 +11,7 @@ export function Hero() {
       <div className="max-w-6xl mx-auto px-6 w-full">
         <div className="max-w-3xl">
           <div className="flex flex-wrap gap-2 mb-8">
-            {["CLI", "Agent skills", "Self-hosted", "MIT licensed"].map((tag) => (
+            {["CLI", "Agent skills", "Bring your own keys", "MIT licensed"].map((tag) => (
               <span
                 key={tag}
                 className="text-[11px] font-mono font-medium uppercase tracking-[0.15em] px-3 py-1.5 rounded-full"
@@ -35,7 +37,7 @@ export function Hero() {
           >
             SRE Agent queries your logs, finds the root cause, writes a code fix,
             and opens a PR — while your engineer is still reading the alert.
-            Runs locally. No cloud. MIT licensed.
+            Free to use. Bring your own keys — run it on your machine or in your own cloud. MIT licensed.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -56,6 +58,10 @@ export function Hero() {
             >
               See how it works
             </a>
+          </div>
+
+          <div className="mt-4">
+            <VideoLightbox />
           </div>
 
           <div className="flex items-center gap-4 mt-6">
@@ -91,16 +97,16 @@ export function Hero() {
               </span>
             </div>
             <pre className="p-5 text-sm font-mono leading-7 overflow-x-auto" style={{ color: "#c9d1d9" }}>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent full-cycle --duration 1h{'\n'}
+              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --time-window 24h{'\n'}
               <span style={{ color: "#8b949e" }}>
                 {'›'} Scanning Grafana Loki for errors...{'\n'}
                 {'›'} Found 3 errors. P1: 5xx spike /api/resumes{'\n\n'}
               </span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{'\n'}
+              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze{'\n'}
               <span style={{ color: "#8b949e" }}>
                 {'›'} Root cause: token refresh regression in auth-service v2.3.1{'\n\n'}
               </span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --approve{'\n'}
+              <span style={{ color: "#735c41" }}>$</span> sre-agent fix{'\n'}
               <span style={{ color: "#3fb950" }}>
                 {'›'} PR #482 opened: revert token validation path{'\n'}
                 {'›'} CI passed. Team reviews and deploys via their pipeline.{'\n'}

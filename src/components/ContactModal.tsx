@@ -70,7 +70,7 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
               Talk to us
             </h3>
             <p className="text-sm mb-6" style={{ color: "#6b665e" }}>
-              For support, enterprise inquiries, or custom integrations — reach us directly.
+              For support, setup, or custom integrations — reach us directly.
             </p>
 
             <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: "#f7f4ed", border: "1px solid #e0d9cd" }}>
@@ -97,8 +97,8 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
             </div>
 
             <div className="space-y-2 text-xs mb-6" style={{ color: "#6b665e" }}>
-              <p>Support: $100/month · 48h SLA</p>
-              <p>Enterprise: custom pricing · custom SLA</p>
+              <p>Open plan: free forever · bring your own keys</p>
+              <p>Setup package: $300 · one-time</p>
             </div>
 
             <div className="flex gap-3">

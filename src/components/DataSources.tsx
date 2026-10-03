@@ -84,25 +84,6 @@ export function DataSources() {
           ))}
         </div>
 
-        {/* Runtime targets note */}
-        <div className="max-w-3xl mb-8">
-          <p
-            className="text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono"
-            style={{ color: "#735c41" }}
-          >
-            Runtime targets
-          </p>
-          <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "#1b1c19" }}>
-            Docker, Kubernetes, VMs — if logs reach Loki, the agent sees it.
-          </h3>
-          <p className="text-sm leading-relaxed" style={{ color: "#6b665e" }}>
-            No per-runtime plugin needed. The agent queries Loki with container patterns
-            you configure — works the same whether your workload runs on Docker, Kubernetes,
-            bare metal, or Lambda. Future deploy actions (rollback, scale, restart) will
-            target each platform natively — coming after the GitHub Actions baseline ships.
-          </p>
-        </div>
-
         {/* Security section */}
         <div className="max-w-3xl mb-16">
           <p
@@ -193,19 +174,7 @@ export function DataSources() {
                 {'›'} AI: anthropic / claude-sonnet-4-20250514{'\n'}
                 {'›'} Credentials: github ✓  anthropic ✓  grafana ✓{'\n\n'}
               </span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent detect --duration 5m{'\n'}
-              <span style={{ color: "#8b949e" }}>
-                {'›'} Found 2 errors in last 5m:{'\n'}
-                {'  '}• 5xx rate spike on /api/resumes (47 occurrences){'\n'}
-                {'  '}• connection timeout to postgres-primary (3 occurrences){'\n\n'}
-              </span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent analyze --finding 0{'\n'}
-              <span style={{ color: "#8b949e" }}>
-                {'›'} ROOT_CAUSE: token refresh regression in auth-service v2.3.1{'\n'}
-                {'›'} SEVERITY: high  CONFIDENCE: 0.91{'\n'}
-                {'›'} Decision: proceed_to_fix{'\n\n'}
-              </span>
-              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --finding 0 --dry-run{'\n'}
+              <span style={{ color: "#735c41" }}>$</span> sre-agent fix --dry-run{'\n'}
               <span style={{ color: "#8b949e" }}>
                 {'›'} DRY RUN — no PR created{'\n'}
                 {'›'} Would open PR: revert token validation path{'\n'}

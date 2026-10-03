@@ -7,50 +7,33 @@ const plans = [
     name: "Open",
     price: "Free",
     period: "forever",
-    description: "For solo engineers, side projects, and evaluation.",
+    description: "Bring your own keys. Run it on your machine or in your own cloud.",
     features: [
-      "Unlimited services",
-      "Detect + analyze + fix",
+      "Unlimited services — detect, analyze, fix, PR",
       "All integrations (Grafana, Loki, GitHub)",
       "Agent skills (Claude Code, Codex, Cursor)",
-      "MIT licensed — no restrictions",
-      "Community support (GitHub Issues)",
+      "Bring your own keys · laptop, VM, or your cloud",
+      "MIT licensed · community support on GitHub",
     ],
     cta: "Install free",
     href: "#install",
     highlight: false,
   },
   {
-    name: "Support",
-    price: "$100",
-    period: "/month",
-    description: "For teams running SRE Agent in production.",
+    name: "Setup",
+    price: "$300",
+    period: "one-time",
+    description: "We get SRE Agent running against your stack. You watch, you learn, you own it.",
     features: [
-      "Everything in Open",
-      "Email support · 48h SLA",
-      "Setup assistance",
-      "Custom integration help",
-      "Priority bug fixes",
+      "Install on your machine or your cloud VM",
+      "Grafana / Loki + GitHub connected",
+      "First working cycle: alert → PR",
+      "Timer + kill switch configured safely",
+      "Ask us anything afterwards",
     ],
-    cta: "Get support",
-    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Support%20plan%20inquiry",
+    cta: "Book setup",
+    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Setup%20package",
     highlight: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "For orgs with custom infra, compliance, and SLA needs.",
-    features: [
-      "Everything in Support",
-      "Dedicated support · Custom SLA",
-      "Custom integrations",
-      "On-prem deployment assistance",
-      "Training + onboarding",
-    ],
-    cta: "Talk to us",
-    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Enterprise%20inquiry",
-    highlight: false,
   },
 ];
 
@@ -69,13 +52,14 @@ export function Pricing() {
             Free to use. Support when you need it.
           </h2>
           <p className="text-base" style={{ color: "#6b665e" }}>
-            SRE Agent is MIT licensed — use it however you want, no restrictions.
-            Paid tiers are for teams that need professional support, custom integrations,
-            and guaranteed response times.
+            SRE Agent is free to use — bring your own API keys and run it on your
+            machine or in your own cloud. It is MIT licensed, no restrictions.
+            Need help getting started? A one-time setup package ($300) gets it
+            running against your stack.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -151,9 +135,10 @@ export function Pricing() {
         </div>
 
         <p className="mt-10 text-sm" style={{ color: "#8b867f" }}>
-          Open plan is free forever — install via Go or from source. The source is
-          MIT licensed on GitHub. Support and Enterprise plans provide email support,
-          setup assistance, custom integrations, and SLAs.
+          The Open plan is free forever — bring your own keys (Anthropic, GitHub,
+          Grafana) and run it on your machine or in your own cloud. The source is
+          MIT licensed on GitHub. The Setup package ($300, one-time) gets it
+          running against your stack. Bigger integrations? Ask us.
           Questions:{" "}
           <ContactModal
             trigger={
