@@ -11,8 +11,8 @@ export function CTA() {
         </h2>
         <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#8b867f" }}>
           Install in under a minute — no signup, no card. Bring your own keys
-          and run it on your machine or in your own cloud. Need a hand? The
-          setup package ($300, one-time) gets it running against your stack.
+          and run it on your machine or in your own cloud. MIT licensed, no
+          restrictions, no paid tiers.
         </p>
         <div className="flex flex-col items-center gap-4">
           <ContactModal
@@ -26,7 +26,7 @@ export function CTA() {
             }
           />
           <p className="text-xs" style={{ color: "#6b665e" }}>
-            Free to use · Setup package: $300 one-time
+            Free to use · MIT licensed
           </p>
         </div>
       </div>

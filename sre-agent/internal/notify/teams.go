@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
 )
 
 // TeamsNotifier posts Adaptive Cards to a Teams channel via a Power Automate

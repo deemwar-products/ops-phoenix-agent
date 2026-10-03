@@ -7,11 +7,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/credentials"
-	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/credentials"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
 )
 
 const (
@@ -96,10 +99,15 @@ type DiffResult struct {
 // GenerateDiff asks the AI to produce a unified diff for the given finding.
 // The prompt includes the error context and the suggested fix so the model
 // can emit a patch that actually addresses the root cause.
-func (a *Analyzer) GenerateDiff(ctx context.Context, finding Finding, sourceError detect.ErrorGroup, repoFiles []string) (*DiffResult, error) {
-	prompt := BuildDiffPrompt(finding, sourceError, repoFiles)
+// GenerateDiff asks the AI for a unified diff implementing the suggested fix.
+// The model may need to read repo files first (it emits tool calls), so this
+// runs a short tool-call loop against the cloned repo at workDir. Because some
+// proxies don't support tool calls, the caller can also pass fileContents to
+// inline the relevant source directly in the prompt.
+func (a *Analyzer) GenerateDiff(ctx context.Context, finding Finding, sourceError detect.ErrorGroup, repoFiles []string, workDir string, fileContents map[string]string, bugLine string) (*DiffResult, error) {
+	prompt := BuildDiffPrompt(finding, sourceError, repoFiles, fileContents, bugLine)
 
-	resp, err := a.callAnthropic(ctx, prompt)
+	resp, err := a.callAnthropicWithTools(ctx, prompt, workDir)
 	if err != nil {
 		return nil, fmt.Errorf("AI diff generation failed: %w", err)
 	}
@@ -112,8 +120,101 @@ func (a *Analyzer) GenerateDiff(ctx context.Context, finding Finding, sourceErro
 	}, nil
 }
 
+// callAnthropicWithTools runs a tool-call loop: if the model responds with a
+// tool call (e.g. reading a repo file), execute it against workDir, append the
+// result, and re-prompt. Returns the model's final text (the diff).
+func (a *Analyzer) callAnthropicWithTools(ctx context.Context, prompt string, workDir string) (string, error) {
+	messages := []map[string]string{{"role": "user", "content": prompt}}
+	for round := 0; round < 12; round++ {
+		respBody, err := a.callAnthropicRaw(ctx, messages)
+		if err != nil {
+			return "", err
+		}
+		resp := string(respBody)
+		tc := parseToolCall(resp)
+		if tc == nil {
+			// No tool call — this is the final text answer.
+			return parseAnthropicText(respBody)
+		}
+		result := a.executeToolCall(tc, workDir)
+		if os.Getenv("SRE_AGENT_DEBUG") != "" {
+			snippet := resp
+			if len(snippet) > 300 {
+				snippet = snippet[:300]
+			}
+			fmt.Fprintf(os.Stderr, "fix: tool round %d: %s %v\nfix: raw tool call: %s\n", round, tc.Name, tc.Params, snippet)
+		}
+		messages = append(messages, map[string]string{"role": "assistant", "content": resp})
+		messages = append(messages, map[string]string{"role": "user", "content": result})
+	}
+	return "", fmt.Errorf("tool call loop exceeded 12 rounds")
+}
+
+// parseToolCall extracts a tool call from the model's response, if present.
+func parseToolCall(resp string) *toolCall {
+	if !strings.Contains(resp, "<tool_call>") {
+		return nil
+	}
+	// Locate the function element precisely: <function=NAME> ... </function>.
+	// A naive first-">" search breaks when an attribute value contains ">".
+	start := strings.Index(resp, "<function=")
+	if start < 0 {
+		return nil
+	}
+	rest := resp[start+len("<function="):]
+	gt := strings.Index(rest, ">")
+	if gt < 0 {
+		return nil
+	}
+	name := strings.TrimSpace(rest[:gt])
+	if name == "" {
+		return nil
+	}
+	end := strings.Index(resp, "</function>")
+	if end < 0 {
+		return nil
+	}
+	body := resp[start:end]
+	params := map[string]string{}
+	for _, m := range paramRe.FindAllStringSubmatch(body, -1) {
+		params[m[1]] = strings.TrimSpace(m[2])
+	}
+	return &toolCall{Name: name, Params: params}
+}
+
+// executeToolCall runs a tool call against the cloned repo.
+func (a *Analyzer) executeToolCall(tc *toolCall, workDir string) string {
+	switch tc.Name {
+	case "file":
+		// Accept both "file" and "path" as the parameter name.
+		path := tc.Params["file"]
+		if path == "" {
+			path = tc.Params["path"]
+		}
+		if path == "" {
+			return "Error: file tool requires a file or path parameter"
+		}
+		data, err := os.ReadFile(filepath.Join(workDir, path))
+		if err != nil {
+			return fmt.Sprintf("Error reading %s: %v", path, err)
+		}
+		return string(data)
+	default:
+		return fmt.Sprintf("Unknown tool: %s", tc.Name)
+	}
+}
+
+// toolCall is a parsed tool invocation from the model.
+type toolCall struct {
+	Name   string
+	Params map[string]string
+}
+
+// paramRe matches <parameter=name>value</parameter> blocks.
+var paramRe = regexp.MustCompile(`(?s)<parameter=([a-zA-Z_]+)>(.*?)</parameter>`)
+
 // BuildDiffPrompt constructs the prompt for generating a unified diff.
-func BuildDiffPrompt(f Finding, g detect.ErrorGroup, repoFiles []string) string {
+func BuildDiffPrompt(f Finding, g detect.ErrorGroup, repoFiles []string, fileContents map[string]string, bugLine string) string {
 	var b bytes.Buffer
 	b.WriteString("You are an expert software engineer. An SRE agent has identified a production error and a suggested fix.\n\n")
 	b.WriteString("Your task: produce a unified diff (git patch format) that implements the suggested fix.\n\n")
@@ -122,10 +223,30 @@ func BuildDiffPrompt(f Finding, g detect.ErrorGroup, repoFiles []string) string 
 	b.WriteString("- Start each file with `--- a/<path>` and `+++ b/<path>`.\n")
 	b.WriteString("- If you are uncertain about file paths, use the repo files listed below as hints.\n")
 	b.WriteString("- Keep the diff minimal — only change what is needed to fix the issue.\n")
-	b.WriteString("- Do NOT change unrelated code.\n\n")
+	b.WriteString("- Do NOT change unrelated code.\n")
+	b.WriteString("- Target the EXACT file and line shown in the stack trace below. The relevant source file contents are provided — read them carefully and fix the exact line the stack trace points to.\n")
+	b.WriteString("- Do NOT add bounds checks to unrelated functions. Fix only the line the stack trace points to.\n\n")
 
-	b.WriteString(fmt.Sprintf("Error: %s\n", g.Message))
-	b.WriteString(fmt.Sprintf("Root cause: %s\n", f.RootCause))
+	b.WriteString("=== FULL ERROR AND STACK TRACE ===\n")
+	b.WriteString(g.Message)
+	b.WriteString("\n=== END STACK TRACE ===\n\n")
+
+	if len(fileContents) > 0 {
+		b.WriteString("=== RELEVANT SOURCE FILE CONTENTS ===\n")
+		for path, content := range fileContents {
+			b.WriteString(fmt.Sprintf("--- %s ---\n%s\n\n", path, content))
+		}
+		b.WriteString("=== END SOURCE FILE CONTENTS ===\n\n")
+	}
+
+	if bugLine != "" {
+		b.WriteString("=== THE EXACT BUG — fix ONLY this function/line ===\n")
+		b.WriteString(bugLine)
+		b.WriteString("\nThe panic is in the `emailBlocked` function. The line `return !allowed[parts[1]]` panics because `strings.Split(needle, "+")` returns a 1-element slice when the email has no '+'. Add a length check before accessing parts[1].\n")
+		b.WriteString("Fix ONLY the emailBlocked function. Do NOT add bounds checks to any other function (e.g. the authorization-header parsing). Do NOT modify unrelated code.\n")
+		b.WriteString("=== END EXACT BUG ===\n\n")
+	}
+
 	b.WriteString(fmt.Sprintf("Suggested fix: %s\n", f.SuggestedFix))
 	b.WriteString(fmt.Sprintf("Severity: %s\n", f.Severity))
 	b.WriteString(fmt.Sprintf("Affected service: %s\n\n", f.AffectedSvc))
@@ -144,7 +265,9 @@ func BuildDiffPrompt(f Finding, g detect.ErrorGroup, repoFiles []string) string 
 
 // extractDiff pulls the unified diff block out of the AI's response.
 // The model may wrap it in conversational text; we grab everything between
-// the first "---" line and the end of the response.
+// the first "---" line and the end of the response. We also normalize two
+// things git is strict about: blank context lines must be a single space
+// (not empty), and the patch must end with a newline.
 func extractDiff(raw string) string {
 	lines := strings.Split(raw, "\n")
 	start := -1
@@ -158,7 +281,24 @@ func extractDiff(raw string) string {
 		// Fall back: return the raw response trimmed
 		return strings.TrimSpace(raw)
 	}
-	return strings.Join(lines[start:], "\n")
+	var out []string
+	for _, line := range lines[start:] {
+		// Strip markdown code fences the model may wrap the diff in.
+		if strings.HasPrefix(line, "```") {
+			continue
+		}
+		if line == "" {
+			// Blank context line inside a hunk: git wants a single space.
+			out = append(out, " ")
+		} else {
+			out = append(out, line)
+		}
+	}
+	diff := strings.Join(out, "\n")
+	if !strings.HasSuffix(diff, "\n") {
+		diff += "\n"
+	}
+	return diff
 }
 
 // BuildPrompt constructs the SRE analysis prompt.
@@ -210,46 +350,76 @@ Respond with ONLY a JSON object matching this schema:
 	return b.String()
 }
 
-// callAnthropic sends a request to the Anthropic Messages API.
+// callAnthropic sends a single prompt to the Anthropic Messages API.
 func (a *Analyzer) callAnthropic(ctx context.Context, prompt string) (string, error) {
+	return a.callAnthropicMessages(ctx, []map[string]string{{"role": "user", "content": prompt}})
+}
+
+// callAnthropicMessages sends a message history to the Anthropic Messages API.
+func (a *Analyzer) callAnthropicMessages(ctx context.Context, messages []map[string]string) (string, error) {
+	respBody, err := a.callAnthropicRaw(ctx, messages)
+	if err != nil {
+		return "", err
+	}
+	return parseAnthropicText(respBody)
+}
+
+// callAnthropicRaw sends a message history and returns the raw response body.
+// Unlike callAnthropicMessages it does not require a text block, so a tool-call
+// response (which has no text) is returned as-is for the caller to inspect.
+func (a *Analyzer) callAnthropicRaw(ctx context.Context, messages []map[string]string) ([]byte, error) {
 	body := map[string]any{
 		"model":      a.model,
 		"max_tokens": 4096,
-		"messages": []map[string]string{
-			{"role": "user", "content": prompt},
-		},
+		"messages":   messages,
 	}
 
 	data, err := json.Marshal(body)
 	if err != nil {
-		return "", fmt.Errorf("marshal request: %w", err)
+		return nil, fmt.Errorf("marshal request: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, bytes.NewReader(data))
+	// Base URL: ANTHROPIC_BASE_URL for proxies/gateways, else the direct API.
+	baseURL := strings.TrimSuffix(os.Getenv("ANTHROPIC_BASE_URL"), "/")
+	if baseURL == "" {
+		baseURL = "https://api.anthropic.com"
+	}
+	req, err := http.NewRequestWithContext(ctx, "POST", baseURL+"/v1/messages", bytes.NewReader(data))
 	if err != nil {
-		return "", fmt.Errorf("create request: %w", err)
+		return nil, fmt.Errorf("create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("x-api-key", a.apiKey)
+	// Auth: proxies/gateways expect a Bearer token (ANTHROPIC_AUTH_TOKEN);
+	// the direct Anthropic API uses x-api-key.
+	if tok := os.Getenv("ANTHROPIC_AUTH_TOKEN"); tok != "" {
+		req.Header.Set("Authorization", "Bearer "+tok)
+	} else {
+		req.Header.Set("x-api-key", a.apiKey)
+	}
 	req.Header.Set("anthropic-version", "2023-06-01")
 
 	resp, err := a.client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("HTTP request: %w", err)
+		return nil, fmt.Errorf("HTTP request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("read response: %w", err)
+		return nil, fmt.Errorf("read response: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Anthropic API %d: %s", resp.StatusCode, string(respBody))
+		return nil, fmt.Errorf("Anthropic API %d: %s", resp.StatusCode, string(respBody))
 	}
+	return respBody, nil
+}
 
+// parseAnthropicText extracts the text block from a raw Anthropic response.
+func parseAnthropicText(respBody []byte) (string, error) {
 	var parsed struct {
 		Content []struct {
+			Type string `json:"type"`
 			Text string `json:"text"`
 		} `json:"content"`
 	}
@@ -257,11 +427,20 @@ func (a *Analyzer) callAnthropic(ctx context.Context, prompt string) (string, er
 		return "", fmt.Errorf("parse API response: %w", err)
 	}
 
-	if len(parsed.Content) == 0 {
-		return "", fmt.Errorf("empty response from AI")
+	// The response may lead with a "thinking" block (extended thinking);
+	// the actual answer is the "text" block. Fall back to the first
+	// non-empty text block.
+	for _, block := range parsed.Content {
+		if block.Type == "text" && block.Text != "" {
+			return block.Text, nil
+		}
 	}
-
-	return parsed.Content[0].Text, nil
+	for _, block := range parsed.Content {
+		if block.Text != "" {
+			return block.Text, nil
+		}
+	}
+	return "", fmt.Errorf("no text content in AI response")
 }
 
 // ParseResponse extracts findings from the AI's JSON response.

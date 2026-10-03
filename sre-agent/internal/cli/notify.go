@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/deemwar-products/sre-agent/internal/config"
-	"github.com/deemwar-products/sre-agent/internal/credentials"
-	"github.com/deemwar-products/sre-agent/internal/notify"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/config"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/credentials"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/notify"
 )
 
 // maybeNotify dispatches a run result to the configured chat backend.

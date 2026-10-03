@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
 )
 
 // captureServer records the last POST body and replies with the given status.

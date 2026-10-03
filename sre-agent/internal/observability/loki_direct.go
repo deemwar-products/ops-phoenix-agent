@@ -15,6 +15,8 @@ type LokiDirectAdapter struct {
 	OrgID     string
 	Tenant    string
 	BasicAuth *BasicAuth
+	// Filters are the customer's container/host/error filters from config.
+	Filters FilterConfig
 }
 
 // BasicAuth holds optional basic auth credentials.
@@ -45,9 +47,7 @@ func (a *LokiDirectAdapter) QueryErrors(ctx context.Context, timeWindow string) 
 	}
 	start := time.Now().Add(-startOffset).UnixNano()
 
-	query := BuildLogQL(FilterConfig{
-		ErrorPattern: `level=~"(?i)error|fatal|panic"`,
-	})
+	query := BuildLogQL(a.Filters.orDefault())
 
 	u := url.Values{}
 	u.Set("query", query)

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
 )
 
 // --- Prompt tests ---

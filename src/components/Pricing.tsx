@@ -4,10 +4,10 @@ import { ContactModal } from "./ContactModal";
 
 const plans = [
   {
-    name: "Open",
+    name: "Open Source",
     price: "Free",
     period: "forever",
-    description: "Bring your own keys. Run it on your machine or in your own cloud.",
+    description: "MIT licensed. Bring your own keys. Run it on your machine or in your own cloud.",
     features: [
       "Unlimited services — detect, analyze, fix, PR",
       "All integrations (Grafana, Loki, GitHub)",
@@ -18,22 +18,6 @@ const plans = [
     cta: "Install free",
     href: "#install",
     highlight: false,
-  },
-  {
-    name: "Setup",
-    price: "$300",
-    period: "one-time",
-    description: "We get SRE Agent running against your stack. You watch, you learn, you own it.",
-    features: [
-      "Install on your machine or your cloud VM",
-      "Grafana / Loki + GitHub connected",
-      "First working cycle: alert → PR",
-      "Timer + kill switch configured safely",
-      "Ask us anything afterwards",
-    ],
-    cta: "Book setup",
-    href: "mailto:admin@deemwar.com?subject=SRE%20Agent%20—%20Setup%20package",
-    highlight: true,
   },
 ];
 
@@ -49,23 +33,22 @@ export function Pricing() {
             Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight mb-4" style={{ color: "#1b1c19" }}>
-            Free to use. Support when you need it.
+            Free to use. Open source.
           </h2>
           <p className="text-base" style={{ color: "#6b665e" }}>
             SRE Agent is free to use — bring your own API keys and run it on your
-            machine or in your own cloud. It is MIT licensed, no restrictions.
-            Need help getting started? A one-time setup package ($300) gets it
-            running against your stack.
+            machine or in your own cloud. It is MIT licensed, no restrictions, no
+            paid tiers. Need a hand getting it running? Reach out and we'll help.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div className="grid grid-cols-1 max-w-lg mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className="rounded-2xl overflow-hidden"
               style={{
-                border: plan.highlight ? "2px solid #735c41" : "1px solid #e0d9cd",
+                border: "1px solid #e0d9cd",
                 backgroundColor: "#ffffff",
               }}
             >
@@ -105,40 +88,25 @@ export function Pricing() {
               </div>
 
               <div className="px-6 pb-6">
-                {plan.name !== "Open" ? (
-                  <ContactModal
-                    trigger={
-                      <span className="block w-full text-center py-3 rounded-full text-sm font-semibold cursor-pointer" style={{
-                        backgroundColor: plan.highlight ? "#735c41" : "transparent",
-                        color: plan.highlight ? "#fff" : "#735c41",
-                        border: plan.highlight ? "none" : "1px solid #d5cfc4",
-                      }}>
-                        {plan.cta}
-                      </span>
-                    }
-                  />
-                ) : (
-                  <a
-                    href={plan.href}
-                    className="block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
-                    style={{
-                      backgroundColor: "#735c41",
-                      color: "#fff",
-                    }}
-                  >
-                    {plan.cta}
-                  </a>
-                )}
+                <a
+                  href={plan.href}
+                  className="block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
+                  style={{
+                    backgroundColor: "#735c41",
+                    color: "#fff",
+                  }}
+                >
+                  {plan.cta}
+                </a>
               </div>
             </div>
           ))}
         </div>
 
         <p className="mt-10 text-sm" style={{ color: "#8b867f" }}>
-          The Open plan is free forever — bring your own keys (Anthropic, GitHub,
+          SRE Agent is free forever — bring your own keys (Anthropic, GitHub,
           Grafana) and run it on your machine or in your own cloud. The source is
-          MIT licensed on GitHub. The Setup package ($300, one-time) gets it
-          running against your stack. Bigger integrations? Ask us.
+          MIT licensed on GitHub. No paid tiers, no seat limits.
           Questions:{" "}
           <ContactModal
             trigger={

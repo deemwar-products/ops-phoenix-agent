@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/deemwar-products/sre-agent/internal/credentials"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/credentials"
 )
 
 // DefaultSteps returns the standard setup step sequence.

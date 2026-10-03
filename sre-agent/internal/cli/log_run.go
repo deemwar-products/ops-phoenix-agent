@@ -3,7 +3,7 @@ package cli
 import (
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/history"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/history"
 )
 
 // recordRun saves a run to the history log. Errors are silently ignored —

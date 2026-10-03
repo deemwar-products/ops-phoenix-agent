@@ -5,7 +5,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
 )
 
 // Status describes how an agent run ended.
