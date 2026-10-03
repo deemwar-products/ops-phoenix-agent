@@ -10,8 +10,9 @@ export function CTA() {
           Free to use. Support when you need it.
         </h2>
         <p className="text-base sm:text-lg leading-relaxed mb-10" style={{ color: "#8b867f" }}>
-          Install the Open plan in under a minute. No signup, no card, no cloud.
-          For support, custom integrations, or enterprise SLAs, reach out directly.
+          Install in under a minute — no signup, no card. Bring your own keys
+          and run it on your machine or in your own cloud. MIT licensed, no
+          restrictions, no paid tiers.
         </p>
         <div className="flex flex-col items-center gap-4">
           <ContactModal
@@ -25,7 +26,7 @@ export function CTA() {
             }
           />
           <p className="text-xs" style={{ color: "#6b665e" }}>
-            Support: $100/month · Enterprise: custom pricing
+            Free to use · MIT licensed
           </p>
         </div>
       </div>

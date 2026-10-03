@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Problem } from "@/components/Problem";
-import { WhatItDoes } from "@/components/WhatItDoes";
 import { HowItWorks } from "@/components/HowItWorks";
+import { DemoSection } from "@/components/DemoSection";
 import { TwoSurfaces } from "@/components/TwoSurfaces";
 import { Install } from "@/components/Install";
 import { DataSources } from "@/components/DataSources";
@@ -17,8 +17,8 @@ export function App() {
       <main>
         <Hero />
         <Problem />
-        <WhatItDoes />
         <HowItWorks />
+        <DemoSection />
         <TwoSurfaces />
         <Install />
         <DataSources />

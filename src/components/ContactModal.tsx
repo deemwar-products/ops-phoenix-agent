@@ -70,7 +70,7 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
               Talk to us
             </h3>
             <p className="text-sm mb-6" style={{ color: "#6b665e" }}>
-              For support, enterprise inquiries, or custom integrations — reach us directly.
+              MIT licensed, free forever. Reach out for support or community questions.
             </p>
 
             <div className="p-4 rounded-xl mb-4" style={{ backgroundColor: "#f7f4ed", border: "1px solid #e0d9cd" }}>
@@ -96,24 +96,9 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="space-y-2 text-xs mb-6" style={{ color: "#6b665e" }}>
-              <p>Support: $100/month · 48h SLA</p>
-              <p>Enterprise: custom pricing · custom SLA</p>
+            <div className="space-y-2 text-xs" style={{ color: "#6b665e" }}>
+              <p>MIT licensed · free forever · bring your own keys</p>
             </div>
-
-            <div className="flex gap-3">
-              <a
-                href="mailto:admin@deemwar.com"
-                className="flex-1 block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
-                style={{ backgroundColor: "#735c41", color: "#fff" }}
-              >
-                Open email client
-              </a>
-            </div>
-
-            <p className="text-center text-[10px] mt-3" style={{ color: "#8b867f" }}>
-              Use Copy if your browser doesn&apos;t open a mail client
-            </p>
           </div>
         </div>
       )}

@@ -15,6 +15,8 @@ type GrafanaCloudAdapter struct {
 	APIToken  string
 	OrgID     string
 	Tenant    string
+	// Filters are the customer's container/host/error filters from config.
+	Filters FilterConfig
 }
 
 // NewGrafanaCloudAdapter creates a new Grafana Cloud adapter.
@@ -40,9 +42,7 @@ func (a *GrafanaCloudAdapter) QueryErrors(ctx context.Context, timeWindow string
 	end := time.Now().UnixMilli()
 	start := time.Now().Add(-startOffset).UnixMilli()
 
-	query := BuildLogQL(FilterConfig{
-		ErrorPattern: `level=~"(?i)error|fatal|panic"`,
-	})
+	query := BuildLogQL(a.Filters.orDefault())
 
 	body := map[string]any{
 		"queries": []map[string]any{
@@ -90,42 +90,9 @@ func (a *GrafanaCloudAdapter) TestConnection(ctx context.Context) error {
 	return nil
 }
 
-// parseGrafanaResponse unwraps Grafana's envelope response from a datasource query.
-// Grafana wraps Loki results as: results.A.frames[0].data.values[] where each
-// value is [timestamp_ms, log_line].
-func parseGrafanaResponse(data []byte) ([]ErrorLog, error) {
-	var env struct {
-		Results map[string]struct {
-			Frames []struct {
-				Data struct {
-					Values [][]string `json:"values"`
-				} `json:"data"`
-			} `json:"frames"`
-		} `json:"results"`
-	}
-	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, fmt.Errorf("unmarshal grafana response: %w", err)
-	}
-
-	var out []ErrorLog
-	for _, r := range env.Results {
-		for _, frame := range r.Frames {
-			for _, pair := range frame.Data.Values {
-				if len(pair) != 2 {
-					continue
-				}
-				ts := parseGrafanaTimestamp(pair[0])
-				out = append(out, ErrorLog{
-					Timestamp: ts,
-					Message:   pair[1],
-					Raw:       pair[1],
-					Labels:    map[string]string{},
-				})
-			}
-		}
-	}
-	return out, nil
-}
+// parseGrafanaResponse lives in grafana_frames.go — it unwraps Grafana's
+// DataFrame envelope (results.A.frames[0].data.values, one array per schema
+// field) rather than assuming [timestamp, line] pairs.
 
 // parseGrafanaTimestamp handles millisecond timestamps from Grafana.
 // 13 digits = ms since epoch, anything else = ns since epoch.

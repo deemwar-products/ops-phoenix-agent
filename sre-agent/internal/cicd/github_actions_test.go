@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/deemwar-products/sre-agent/internal/cicd"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/cicd"
 )
 
 func TestNewGitHubActions(t *testing.T) {

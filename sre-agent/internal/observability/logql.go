@@ -47,11 +47,35 @@ func BuildLogQL(fc FilterConfig) string {
 				label = label[:len(label)-1] + "," + inner + "}"
 			}
 		} else {
-			label += fmt.Sprintf(` |= "(?i)(%s)"`, fc.ErrorPattern)
+			// Case-insensitive line filter.
+			//
+			// Two traps here, both of which silently return zero rows:
+			//  1. This is RE2, and a line filter is a *literal* string, not a
+			//     regex. `|= "(?i)foo"` looks for the literal text "(?i)foo"
+			//     and `|= "[Hh]ealthz"` looks for the literal "[Hh]...".
+			//  2. The case-insensitive form of a literal filter is `|~`
+			//     (case-insensitive =), not `|=`. `|~` takes the regex.
+			//
+			// So: `|~ "(?i)..."` for a regex, `|~ "(?i:...)"` also works, and
+			// `|= "..."` for an already-lowercase literal.
+			//
+			// Quote and escape the caller's pattern for the LogQL string
+			// literal — an error_pattern like "level":"ERROR" contains double
+			// quotes, and an unescaped quote ends the literal and turns the
+			// rest of the query into a syntax error.
+			label += fmt.Sprintf(` |~ "(?i)%s"`, escapeLogQL(fc.ErrorPattern))
 		}
 	}
 
 	return label
+}
+
+// escapeLogQL escapes a caller-supplied pattern for use inside a LogQL string
+// literal. Backslashes and double quotes must be escaped; everything else
+// (braces, pipes, parens) is regex syntax we want to keep.
+func escapeLogQL(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	return strings.ReplaceAll(s, `"`, `\"`)
 }
 
 // globToRegex converts shell-style globs to regex patterns.

@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/deemwar-products/sre-agent/internal/cli"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/cli"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/config"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/config"
 	"gopkg.in/yaml.v3"
 )
 

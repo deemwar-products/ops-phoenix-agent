@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -133,7 +134,26 @@ func Load() (*Config, error) {
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("parse config: %w", err)
 	}
+	cfg.Agent.WorkDir = expandHome(cfg.Agent.WorkDir)
 	return &cfg, nil
+}
+
+// expandHome replaces a leading ~ with the user's home directory. Config
+// values like work_dir: ~/.config/sre-agent are stored with a literal ~,
+// which would otherwise be treated as a literal directory name.
+func expandHome(p string) string {
+	if p == "~" {
+		if home, err := os.UserHomeDir(); err == nil {
+			return home
+		}
+		return p
+	}
+	if strings.HasPrefix(p, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			return filepath.Join(home, p[2:])
+		}
+	}
+	return p
 }
 
 // MustLoad returns the config or panics (used at startup).

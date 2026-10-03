@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/deemwar-products/sre-agent/internal/vcs"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/vcs"
 )
 
 // setupTestRepo creates a temp dir with a git repo that has a single commit on main.

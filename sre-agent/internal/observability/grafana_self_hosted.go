@@ -14,6 +14,8 @@ type GrafanaSelfHostedAdapter struct {
 	APIToken      string
 	DatasourceUID string
 	Tenant        string
+	// Filters are the customer's container/host/error filters from config.
+	Filters FilterConfig
 }
 
 // NewGrafanaSelfHostedAdapter creates a new self-hosted Grafana adapter.
@@ -36,9 +38,7 @@ func (a *GrafanaSelfHostedAdapter) QueryErrors(ctx context.Context, timeWindow s
 	end := time.Now().UnixMilli()
 	start := time.Now().Add(-startOffset).UnixMilli()
 
-	query := BuildLogQL(FilterConfig{
-		ErrorPattern: `level=~"(?i)error|fatal|panic"`,
-	})
+	query := BuildLogQL(a.Filters.orDefault())
 
 	body := map[string]any{
 		"queries": []map[string]any{

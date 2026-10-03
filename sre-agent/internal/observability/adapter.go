@@ -30,3 +30,18 @@ const (
 	ProviderLokiDirect         = "loki_direct"
 	ProviderGrafanaSelfHosted  = "grafana_self_hosted"
 )
+
+// defaultErrorPattern is the fallback when a config carries no error_pattern.
+// It is a LABEL filter, so it only matches logs whose "level" is a Loki label.
+// Logs that carry level inside the message (e.g. JSON) need a line filter in
+// the config instead, e.g. error_pattern: 'error|fatal|panic'.
+const defaultErrorPattern = `level=~"(?i)error|fatal|panic"`
+
+// orDefault returns the configured filters, filling in the legacy error
+// pattern when the config left error_pattern empty.
+func (f FilterConfig) orDefault() FilterConfig {
+	if f.ErrorPattern == "" {
+		f.ErrorPattern = defaultErrorPattern
+	}
+	return f
+}

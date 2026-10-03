@@ -79,10 +79,10 @@ export function Install() {
                     any platform with Go
                   </span>
                 </div>
-                <CopyButton text="go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest" dark />
+                <CopyButton text="go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest" dark />
               </div>
               <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                go install github.com/deemwar-products/sre-agent/cmd/sre-agent@latest
+                go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest
               </pre>
             </div>
           </div>
@@ -104,10 +104,10 @@ export function Install() {
                     from source
                   </span>
                 </div>
-                <CopyButton text="git clone https://github.com/deemwar-products/sre-agent.git && cd sre-agent && go build ./cmd/sre-agent" dark />
+                <CopyButton text="git clone https://github.com/deemwar-products/ops-phoenix-agent.git && cd ops-phoenix-agent/sre-agent && go build ./cmd/sre-agent" dark />
               </div>
               <pre className="p-5 text-sm font-mono leading-6" style={{ color: "#c9d1d9" }}>
-                git clone https://github.com/deemwar-products/sre-agent.git{'\n'}cd sre-agent && go build ./cmd/sre-agent
+                git clone https://github.com/deemwar-products/ops-phoenix-agent.git{'\n'}cd ops-phoenix-agent/sre-agent && go build ./cmd/sre-agent
               </pre>
             </div>
           </div>
@@ -151,6 +151,11 @@ export function Install() {
                   label: "Grafana token",
                   example: "glsa_xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                   note: 'Service account token with Viewer permissions. Create at Grafana → Administration → Service Accounts.',
+                },
+                {
+                  label: "Container patterns",
+                  example: "myapp-*, my-service-*",
+                  note: "Glob patterns to match your container names in Loki (e.g. nginx-*, api-*).",
                 },
                 {
                   label: "GitHub repo",

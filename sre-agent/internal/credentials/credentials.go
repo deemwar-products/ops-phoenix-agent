@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/deemwar-products/sre-agent/internal/store"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/store"
 )
 
 // Source indicates where a credential came from.

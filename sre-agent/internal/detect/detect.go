@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/observability"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/observability"
 )
 
 // ErrorGroup is one unique error after deduplication.

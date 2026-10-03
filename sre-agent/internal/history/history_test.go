@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/history"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/history"
 )
 
 // withTempHistoryDir sets XDG_CONFIG_HOME to a temp directory so history

@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/detect"
-	"github.com/deemwar-products/sre-agent/internal/observability"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/observability"
 )
 
 func makeLog(msg, container string, ts time.Time) observability.ErrorLog {

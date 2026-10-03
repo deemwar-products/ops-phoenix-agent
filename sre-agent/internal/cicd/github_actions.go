@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -38,18 +40,23 @@ func (g *GitHubActions) TriggerWorkflow(ctx context.Context, workflowName, branc
 // RunTests executes the project's test suite in the given directory.
 // It tries Taskfile first, then falls back to go test / bun test.
 func (g *GitHubActions) RunTests(ctx context.Context, workDir string) (*TestResult, error) {
-	// Try task first (the project uses Taskfile)
-	result, err := runCommand(ctx, workDir, "task", "test:all")
-	if err == nil {
-		return result, nil
+	// Run `go test ./...` directly. We don't use `task` because a missing
+	// task exits 0 on some setups, which reads as "passed" when nothing ran.
+	// The Go module may live in a subdirectory (e.g. apps/api), so find the
+	// directory that actually contains go.mod and run the tests there.
+	dir := workDir
+	if _, err := os.Stat(filepath.Join(workDir, "go.mod")); err != nil {
+		for _, sub := range []string{"apps/api", "api", "server", "backend"} {
+			if _, err := os.Stat(filepath.Join(workDir, sub, "go.mod")); err == nil {
+				dir = filepath.Join(workDir, sub)
+				break
+			}
+		}
 	}
-
-	// Fall back to go test for Go projects
-	result, err = runCommand(ctx, workDir, "go", "test", "./...")
-	if err == nil {
-		return result, nil
+	result, err := runCommand(ctx, dir, "go", "test", "./...")
+	if os.Getenv("SRE_AGENT_DEBUG") != "" {
+		fmt.Fprintf(os.Stderr, "fix: RunTests dir=%s err=%v passed=%v\n", dir, err, result != nil && result.Passed)
 	}
-
 	return result, err
 }
 

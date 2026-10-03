@@ -5,10 +5,10 @@ import (
 	"io"
 	"time"
 
-	"github.com/deemwar-products/sre-agent/internal/config"
-	"github.com/deemwar-products/sre-agent/internal/detect"
-	"github.com/deemwar-products/sre-agent/internal/notify"
-	"github.com/deemwar-products/sre-agent/internal/observability"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/config"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/detect"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/notify"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/observability"
 	"github.com/spf13/cobra"
 )
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/deemwar-products/sre-agent/internal/config"
-	"github.com/deemwar-products/sre-agent/internal/credentials"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/config"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/credentials"
 )
 
 // NewAdapter creates the appropriate adapter from config and injects
@@ -19,30 +19,45 @@ func NewAdapter(cfg *config.Config) (Adapter, error) {
 	tok, _ := credentials.GetObservabilityToken(cfg.Observability.Type)
 	token := tok.Value
 
+	// The container/host/error filters the user configured at setup. Without
+	// these the adapters fall back to a label-only filter, which silently
+	// returns nothing for logs that carry level inside the message body.
+	filters := FilterConfig{
+		ContainerPatterns: cfg.Observability.ContainerPatterns,
+		HostPatterns:      cfg.Observability.HostPatterns,
+		ErrorPattern:      cfg.Observability.ErrorPattern,
+	}
+
 	switch cfg.Observability.Type {
 	case ProviderLokiDirect:
-		return NewLokiDirectAdapter(
+		a := NewLokiDirectAdapter(
 			cfg.Observability.URL,
 			cfg.Observability.OrgID,
 			cfg.Observability.Tenant,
 			"",
 			token, // basic-auth password = API token for Loki
-		), nil
+		)
+		a.Filters = filters
+		return a, nil
 	case ProviderGrafanaCloud:
 		stack := extractStackSlug(cfg.Observability.URL)
-		return NewGrafanaCloudAdapter(
+		a := NewGrafanaCloudAdapter(
 			stack,
 			token, // Bearer token for Grafana Cloud
 			cfg.Observability.OrgID,
 			cfg.Observability.Tenant,
-		), nil
+		)
+		a.Filters = filters
+		return a, nil
 	case ProviderGrafanaSelfHosted:
-		return NewGrafanaSelfHostedAdapter(
+		a := NewGrafanaSelfHostedAdapter(
 			cfg.Observability.URL,
 			token, // Bearer token for self-hosted Grafana
 			cfg.Observability.OrgID,
 			cfg.Observability.Tenant,
-		), nil
+		)
+		a.Filters = filters
+		return a, nil
 	default:
 		return nil, fmt.Errorf("unknown observability provider: %q", cfg.Observability.Type)
 	}

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/deemwar-products/sre-agent/internal/config"
-	"github.com/deemwar-products/sre-agent/internal/setup"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/config"
+	"github.com/deemwar-products/ops-phoenix-agent/sre-agent/internal/setup"
 	"github.com/spf13/cobra"
 )
 

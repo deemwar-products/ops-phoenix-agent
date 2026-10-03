@@ -49,15 +49,14 @@ func (g *GitHub) EnsureToken() error {
 	return nil
 }
 
-// Clone clones the repo into a fresh work directory.
+// Clone clones the repo into a fresh temp directory and returns its path.
+// We deliberately ignore g.WorkDir (the agent's config dir) and clone into a
+// clean temp dir, so we never collide with config.yaml / runs.yaml and the
+// returned path is always the actual repo root.
 func (g *GitHub) Clone(ctx context.Context) (string, error) {
-	workDir := g.WorkDir
-	if workDir == "" {
-		workDir = filepath.Join(os.TempDir(), fmt.Sprintf("sre-agent-%d", time.Now().Unix()))
-	}
-
-	if err := os.MkdirAll(workDir, 0o700); err != nil {
-		return "", fmt.Errorf("create work dir: %w", err)
+	cloneDir := filepath.Join(os.TempDir(), fmt.Sprintf("sre-agent-%d", time.Now().Unix()))
+	if err := os.MkdirAll(cloneDir, 0o700); err != nil {
+		return "", fmt.Errorf("create clone dir: %w", err)
 	}
 
 	cloneURL := g.Repo
@@ -65,19 +64,13 @@ func (g *GitHub) Clone(ctx context.Context) (string, error) {
 		cloneURL = "https://github.com/" + cloneURL + ".git"
 	}
 
-	cmd := exec.CommandContext(ctx, g.ghPath, "repo", "clone", g.Repo, workDir, "--", "--branch", g.BaseBranch, "--single-branch")
+	cmd := exec.CommandContext(ctx, "git", "clone", "--quiet", "--branch", g.BaseBranch, "--depth", "1", cloneURL, cloneDir)
 	cmd.Dir = os.TempDir()
-	err := cmd.Run()
-	if err != nil {
-		// Fall back to git clone if gh repo clone fails
-		cmd = exec.CommandContext(ctx, "git", "clone", "--branch", g.BaseBranch, "--depth", "1", cloneURL, workDir)
-		cmd.Dir = os.TempDir()
-		if err := cmd.Run(); err != nil {
-			return "", fmt.Errorf("clone %s failed: %w", g.Repo, err)
-		}
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("clone %s failed: %w", g.Repo, err)
 	}
 
-	return workDir, nil
+	return cloneDir, nil
 }
 
 // BranchName returns a unique branch name for the fix.
@@ -96,17 +89,28 @@ func (g *GitHub) CheckoutBranch(ctx context.Context, workDir, branch string) err
 }
 
 // ApplyDiff writes the patch to a temp file and applies it with git apply.
+// If git apply rejects it (the AI's line numbers are often slightly off),
+// fall back to `patch -p1`, which tolerates line offsets and context fuzz.
 func (g *GitHub) ApplyDiff(ctx context.Context, workDir, diff string) error {
 	patchPath := filepath.Join(workDir, ".sre-agent-fix.patch")
 	if err := os.WriteFile(patchPath, []byte(diff), 0o600); err != nil {
 		return fmt.Errorf("write patch: %w", err)
 	}
-	cmd := exec.CommandContext(ctx, "git", "apply", "--whitespace=nowarn", patchPath)
+	defer os.Remove(patchPath)
+
+	cmd := exec.CommandContext(ctx, "git", "apply", "--recount", "--whitespace=nowarn", patchPath)
 	cmd.Dir = workDir
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("apply diff: %w\n%s", err, string(out))
+	if out, err := cmd.CombinedOutput(); err == nil {
+		return nil
+	} else {
+		// Fall back to patch(1), which is more lenient about line numbers.
+		pcmd := exec.CommandContext(ctx, "patch", "-p1", "--fuzz=3", "-i", patchPath)
+		pcmd.Dir = workDir
+		if pout, perr := pcmd.CombinedOutput(); perr != nil {
+			return fmt.Errorf("apply diff: %w\n%s\npatch fallback: %w\n%s", err, string(out), perr, string(pout))
+		}
 	}
-	return os.Remove(patchPath)
+	return nil
 }
 
 // ConfigUser sets the git user for commits.

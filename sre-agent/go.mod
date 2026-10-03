@@ -1,4 +1,4 @@
-module github.com/deemwar-products/sre-agent
+module github.com/deemwar-products/ops-phoenix-agent/sre-agent
 
 go 1.24
 
