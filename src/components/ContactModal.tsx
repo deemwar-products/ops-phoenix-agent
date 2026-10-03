@@ -96,24 +96,10 @@ export function ContactModal({ trigger }: { trigger?: React.ReactNode }) {
               </div>
             </div>
 
-            <div className="space-y-2 text-xs mb-6" style={{ color: "#6b665e" }}>
+            <div className="space-y-2 text-xs" style={{ color: "#6b665e" }}>
               <p>Open plan: free forever · bring your own keys</p>
               <p>Setup package: $300 · one-time</p>
             </div>
-
-            <div className="flex gap-3">
-              <a
-                href="mailto:admin@deemwar.com"
-                className="flex-1 block w-full text-center py-3 rounded-full text-sm font-semibold transition-colors"
-                style={{ backgroundColor: "#735c41", color: "#fff" }}
-              >
-                Open email client
-              </a>
-            </div>
-
-            <p className="text-center text-[10px] mt-3" style={{ color: "#8b867f" }}>
-              Use Copy if your browser doesn&apos;t open a mail client
-            </p>
           </div>
         </div>
       )}
