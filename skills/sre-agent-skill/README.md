@@ -17,7 +17,8 @@ as the log-analysis engine and Grafana/Loki for observability.
 |---|---|---|
 | **Claude Code** or **Codex** | The agent runtime loading this skill | https://claude.com/claude-code |
 | **sre-agent** | Log analysis engine | `go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest` |
-| **Go 1.24+** | Building sre-agent from source | `brew install go` |
+| **Go 1.24+** | Building sre-agent from source | macOS: `brew install go`; Windows: `winget install GoLang.Go` |
+| **Git** | Downloading the repository and skill | macOS: `brew install git`; Windows: `winget install Git.Git` |
 | **Grafana + Loki** | Observability backend | Must have Loki datasource configured |
 
 ### Optional (for full functionality)
@@ -38,6 +39,8 @@ as the log-analysis engine and Grafana/Loki for observability.
 
 ## Install
 
+For the complete macOS and Windows guide, see [`docs/installation.md`](../../docs/installation.md).
+
 ```bash
 # 1. Install sre-agent (if not already installed)
 go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest
@@ -57,6 +60,20 @@ sre-agent auth set ANTHROPIC_API_KEY <your-anthropic-key>
 
 # 5. Restart your agent session to pick up the skill
 ```
+
+### Windows PowerShell
+
+```powershell
+go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest
+git clone https://github.com/deemwar-products/ops-phoenix-agent.git
+Set-Location ops-phoenix-agent
+& .\skills\sre-agent-skill\install.ps1
+sre-agent setup
+```
+
+Use `-Force` when updating an existing Windows installation. Windows users
+should provide credentials with `GRAFANA_API_TOKEN` and `ANTHROPIC_API_KEY`
+environment variables.
 
 Override the Claude skills dir:
 
@@ -89,6 +106,7 @@ sre-agent-skill/
   README.md             This file
   LICENSE               MIT
   install.sh            Symlinks into ~/.claude/skills/ + ~/.agents/skills/
+  install.ps1           Copies into Claude Code/Codex skill directories on Windows
   uninstall.sh          Removes symlinks
   bin/
     install.sh          Copy for npm package

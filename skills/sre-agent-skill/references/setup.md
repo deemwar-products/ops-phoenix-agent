@@ -6,8 +6,8 @@ Guide for installing and configuring sre-agent on a new machine.
 
 | Tool | Required | Install |
 |---|---|---|
-| **Go 1.24+** | Yes | `brew install go` |
-| **Git** | Yes | `brew install git` |
+| **Go 1.24+** | Yes | macOS: `brew install go`; Windows: `winget install GoLang.Go` |
+| **Git** | Yes | macOS: `brew install git`; Windows: `winget install Git.Git` |
 | **Claude Code** or **Codex** | For skill loading | https://claude.com/claude-code |
 | **Grafana instance** | Yes | Must have Loki datasource accessible |
 | **Anthropic API key** | For analyze/fix | https://console.anthropic.com/ |
@@ -32,6 +32,16 @@ git clone https://github.com/muthuishere-agent-skills/sre-agent-skill
 cd sre-agent-skill
 sh install.sh
 ```
+
+On Windows PowerShell, use the native installer:
+
+```powershell
+& .\skills\sre-agent-skill\install.ps1
+```
+
+Run it with `-Force` to update an existing installation. The PowerShell
+installer copies the skill into `$HOME\.claude\skills` and, when Codex is
+installed, `$HOME\.agents\skills`.
 
 Or install via npm (when published):
 ```bash
@@ -84,6 +94,14 @@ sre-agent auth status                # check current state
 sre-agent auth set grafana_token <token>
 sre-agent auth set ANTHROPIC_API_KEY <key>
 sre-agent auth set teams_webhook <url>
+```
+
+On Windows, use environment variables because the current persistent
+credential store is macOS Keychain-backed:
+
+```powershell
+$env:GRAFANA_API_TOKEN = '<grafana-token>'
+$env:ANTHROPIC_API_KEY = '<anthropic-key>'
 ```
 
 ## Verify
