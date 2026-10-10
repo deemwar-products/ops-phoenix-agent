@@ -1,16 +1,6 @@
 ---
 name: sre-agent-skill
-description: >
-  Infrastructure observability and auto-remediation for Loki/Grafana-backed
-  services. Turns natural-language SRE requests — "what's broken in
-  production", "run diagnostics", "analyze the latest errors", "auto-fix
-  the failing service", "show me the error dashboard", "morning SRE check" —
-  into sre-agent CLI invocations (detect, analyze, fix, status). Uses
-  sre-agent (`go install github.com/deemwar-products/ops-phoenix-agent/sre-agent/cmd/sre-agent@latest`)
-  as the log-analysis engine and Grafana for observability. Trigger on:
-  check errors, run diagnostics, what's broken, analyze errors, auto-fix,
-  sre status, show errors, error dashboard, morning SRE check, production
-  issues, health check, infrastructure health, fix the deploy, remediation.
+description: "Infrastructure observability and auto-remediation via sre-agent CLI. Trigger: what's broken, check errors, analyze errors, auto-fix, morning SRE check, sre status, infrastructure health, production issues, run diagnostics, error dashboard, fix the deploy, remediation."
 ---
 
 <!-- version: 0.1.0 -->
